@@ -1,0 +1,151 @@
+<!--AGREGAR Y MOSTRAR DEPORTE-->
+<div style="margin-top: 100px;">
+    <mat-toolbar color="secondary">
+        <mat-toolbar-row>
+            <button mat-icon-button>
+                <mat-icon (click)="sidenav.toggle();">menu</mat-icon>
+            </button>
+            <h1 class="ms-auto" *ngFor="let persona of this.persona">{{persona.nombre}} {{persona.a_paterno}}</h1>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-sidenav-container>
+        <mat-sidenav #sidenav>
+            <mat-nav-list>
+                <a mat-list-item [routerLink]="'/menu-principal'">Inicio</a>
+                <a mat-list-item [routerLink]="'/perfil'">Mi Perfil</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/menu-rol'">Mantenedor de Datos</a>
+                <a mat-list-item [routerLink]="'/menu-deporte'">Deportivo</a>
+                <a mat-list-item [routerLink]="'/menu-socios'">Administrativo</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/mantenedor-contacto'">Mensajes</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null || rolSecreDir != null" [routerLink]="'/gestor-solicitudes'">Solicitudes</a>
+            </mat-nav-list>
+        </mat-sidenav>
+            <mat-sidenav-content>
+            <div class="container-fluid">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="main-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a [routerLink]="'/menu-principal'">Inicio</a></li>
+                        <li class="breadcrumb-item"><a [routerLink]="'/menu-rol'">Mantenedor-Datos</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Administrador-Fotos</li>
+                    </ol>
+                </nav>
+                <!-- /Breadcrumb -->
+                <h1>
+                    Administrador de Fotos
+                </h1>
+                <div id="table" class="table-editable">
+                    <table class="table table-responsive-sm table-striped text-center">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th></th>
+                                <th>Imagen</th>
+                                <th></th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><button class="btn btn-success" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalAgregarFoto">Agregar</button></td>
+                            </tr>
+                            <tr *ngFor="let foto of fotos">
+                                <td></td>
+                                <td> {{ foto.foto }} </td>
+                                <td> {{ foto.galeria }} </td>
+                                <td>
+                                    <i class="fas fa-edit fa-2x" id="editar" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalModificarFoto" (click)="detalleFotoId(foto.idFoto)"></i>
+                                    <i class="fas fa-trash fa-2x" id="eliminar" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalEliminarFoto" (click)="detalleFotoId(foto.idFoto)"></i>
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>
+<!--AGREGAR Y MOSTRAR DEPORTE-->
+
+<!--MODAL MODIFICAR CATEGORIA-->
+<div class="modal fade" id="modalModificarFoto" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modificar Foto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="modificarForm" class="row g-3" (submit)="modificarFoto()">
+                    <div class="col-md-12">
+                        <label for="foto" class="form-label">Imagen</label>
+                        <input type="file" class="form-control form-control-sm" accept=".jpeg, .jpg .png" formControlName="foto" id="foto" (change)="seleccionarArchivo($event)">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Modificar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--MODAL MODIFICAR CATEGORIA-->
+
+<!--MODAL DESACTIVAR CATEGORIA-->
+<div class="modal fade" id="modalEliminarFoto" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Eliminar Foto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5>¿Está seguro de eliminar esta imagen?</h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="btnEliminar" *ngFor="let foto of ima" (click)="eliminarFoto(foto.idFoto)">Eliminar</button>
+          <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+</div>
+<!--MODAL DESACTIVAR CATEGORIA-->
+
+<!--AGREGAR CATEGORIA-->
+<div class="modal fade" id="modalAgregarFoto" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Foto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="loginForm" class="row g-3 needs-validation" (submit)= "agregarFoto()">
+                    <div class="col-md-12">
+                        <label for="foto" class="form-label">Imagen</label>
+                        <input type="file" class="form-control form-control-sm" accept=".jpeg, .jpg .png" formControlName="foto" id="foto" (change)="seleccionarArchivo($event)">
+                    </div>
+                    <div class="col-md-12">
+                        <label for="galeria" class="form-label">Galeria</label>
+                        <select class="form-select" name="galeria" formControlName="galeria" required>
+                            <option value="">Escoger</option>
+                            <option *ngFor="let galeria of galerias" value="{{galeria.idGaleria}}">{{galeria.titulo}}</option>
+                        </select>
+                        <div *ngIf="(submitted && loginForm.get('galeria')?.errors) || (loginForm.get('galeria')?.touched && loginForm.get('galeria')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('galeria')?.hasError('required')">Galeria es requerida</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Agregar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--AGREGAR CATEGORIA-->

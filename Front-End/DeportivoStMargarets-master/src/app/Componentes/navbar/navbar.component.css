@@ -1,0 +1,31 @@
+img
+{
+    width: 75px;
+    height: 75px;
+}
+
+a{
+    color: #000;
+  }
+  a:link{
+    text-decoration: none;
+  }
+  a:hover {
+    color: rgb(207,20,44) !important;
+    cursor: pointer;
+  }
+
+.nav-nom
+{
+    color: rgb(207,20,44);
+}
+
+.nav-link
+{
+    cursor: pointer;
+}
+
+nav
+{
+    width: 100%;
+}

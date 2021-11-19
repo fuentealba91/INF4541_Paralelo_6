@@ -1,0 +1,137 @@
+<!--AGREGAR Y MOSTRAR DEPORTE-->
+<div style="margin-top: 100px;">
+  <mat-toolbar color="secondary">
+      <mat-toolbar-row>
+          <button mat-icon-button>
+              <mat-icon (click)="sidenav.toggle();">menu</mat-icon>
+          </button>
+          <h1 class="ms-auto" *ngFor="let persona of this.persona">{{persona.nombre}} {{persona.a_paterno}}</h1>
+      </mat-toolbar-row>
+  </mat-toolbar>
+  <mat-sidenav-container>
+    <mat-sidenav #sidenav>
+        <mat-nav-list>
+          <a mat-list-item [routerLink]="'/menu-principal'">Inicio</a>
+          <a mat-list-item [routerLink]="'/perfil'">Mi Perfil</a>
+          <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/menu-rol'">Mantenedor de Datos</a>
+          <a mat-list-item [routerLink]="'/menu-deporte'">Deportivo</a>
+          <a mat-list-item [routerLink]="'/menu-socios'">Administrativo</a>
+          <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/mantenedor-contacto'">Mensajes</a>
+          <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null || rolSecreDir != null" [routerLink]="'/gestor-solicitudes'">Solicitudes</a>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <div class="container-fluid">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="main-breadcrumb">
+          <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a [routerLink]="'/menu-principal'">Inicio</a></li>
+              <li class="breadcrumb-item"><a [routerLink]="'/menu-deporte'">Menu-Deporte</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Administrador-Deportes</li>
+          </ol>
+        </nav>
+        <!-- /Breadcrumb -->
+        <h1>
+            Administrador de Deportes
+        </h1>
+        <div id="table" class="table-editable">
+          <table class="table table-responsive-sm table-striped text-center">
+              <thead class="thead-dark">
+                  <tr>
+                      <th></th>
+                      <th>Nombre</th>
+                      <th>Estado</th>
+                      <th>Acción</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td></td>
+                      <td><input type="text" class="form-control" name="nombre" [(ngModel)]="deporte.nombre" autocomplete="off"></td>
+                      <td></td>
+                      <td><button class="btn btn-success" (click)="agregarDeporte()">Agregar</button></td>
+                  </tr>
+                  <tr *ngFor="let deporte of deportes">
+                      <td> </td>
+                      <td> {{ deporte.nombre          }} </td>
+                      <td *ngIf="deporte.estado==1">Activo</td>
+                      <td *ngIf="deporte.estado==0">Inactivo</td>
+                      <td> 
+                          <i class="fas fa-edit fa-2x" id="editar" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalModificarDeporte" (click)="detalleDeporteId(deporte.idDeporte)"></i>
+                          <i class="fas fa-toggle-on fa-2x" *ngIf="deporte.estado==1" id="eliminar" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalEliminarDeporte" (click)="detalleDeporteId(deporte.idDeporte)"></i>
+                          <i class="fas fa-toggle-off fa-2x" *ngIf="deporte.estado==0" id="eliminar2" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalEliminarDeporte2" (click)="detalleDeporteId(deporte.idDeporte)"></i>
+                      </td> 
+                  </tr>
+              </tbody>
+          </table>
+        </div>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
+<!--AGREGAR Y MOSTRAR DEPORTE-->
+
+<!--MODAL MODIFICAR DEPORTE-->
+<div class="modal fade" id="modalModificarDeporte" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modificar Deporte</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <label for="">Id</label>
+                    <input type="text" class="form-control" id="id" *ngFor="let deporte of det" value={{deporte.idDeporte}} disabled>
+                    <label for="">Nombre</label>
+                    <input type="text" class="form-control" id="desc" *ngFor="let deporte of det" value={{deporte.nombre}} autocomplete="off">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="modificarDeporte()">Modificar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--MODAL MODIFICAR DEPORTE-->
+
+<!--MODAL DESACTIVAR DEPORTE-->
+<div class="modal fade" id="modalEliminarDeporte" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Eliminar Deporte</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5 *ngFor="let deporte of det">¿Está seguro de desactivar a {{deporte.nombre}}?</h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="btnEliminar" *ngFor="let deporte of det" (click)="eliminarDeporte(deporte.idDeporte)">Desactivar</button>
+          <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+</div>
+<!--MODAL DESACTIVAR DEPORTE-->
+
+<!--MODAL ACTIVAR DEPORTE-->
+<div class="modal fade" id="modalEliminarDeporte2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Reincorporar Deporte</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5 *ngFor="let deporte of det">¿Está seguro de reincorporar a {{deporte.nombre}}?</h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="btnEliminar" *ngFor="let deporte of det" (click)="eliminarDeporte2(deporte.idDeporte)">Reincorporar</button>
+          <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+</div>
+<!--MODAL ACTIVAR DEPORTE-->

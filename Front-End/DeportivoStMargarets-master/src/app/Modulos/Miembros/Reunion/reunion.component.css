@@ -1,0 +1,46 @@
+.container-fluid
+{
+    margin-top: 20px;
+}
+
+i
+{
+    padding-left: 2px;
+}
+
+.fa-check-circle
+{
+    color: green;
+}
+
+.fa-check-circle:hover
+{
+    color: rgb(5, 105, 13);
+}
+
+.fa-times-circle
+{
+    color:red;
+}
+
+.fa-times-circle:hover
+{
+    color:rgb(155, 0, 0);
+}
+
+h1
+{
+    text-align: center;
+}
+
+input.ng-dirty.ng-invalid {
+    border-bottom: 3px solid red
+}
+
+input.ng-dirty.ng-valid {
+    border-bottom: 3px solid green
+}
+
+.error{
+    color:red
+}

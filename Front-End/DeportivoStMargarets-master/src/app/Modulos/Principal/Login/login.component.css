@@ -1,0 +1,65 @@
+.container-fluid 
+{
+    width: 30%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 150px;
+    margin-bottom: 100px;
+    -webkit-box-shadow: 0px 10px 34px -15px rgba(0, 0, 0, 0.24);
+    -moz-box-shadow: 0px 10px 34px -15px rgba(0, 0, 0, 0.24);
+    box-shadow: 0px 10px 34px -15px rgba(0, 0, 0, 0.24);
+    border-radius: 1%;
+}
+
+@media (max-width: 1200px)
+{
+    .container-fluid
+    {
+        width: 50%;
+    }
+}
+
+@media (max-width: 700px)
+{
+    .container-fluid
+    {
+        width: 80%;
+    }
+}
+
+@media (max-width: 400px)
+{
+    .container-fluid
+    {
+        width: 95%;
+    }
+}
+
+h3
+{
+    text-align: center;
+}
+
+.col-md-6
+{
+    text-align: center;
+}
+
+#boton
+{
+    text-align: center;
+}
+
+input.ng-dirty.ng-invalid {
+    border-bottom: 3px solid red
+}
+
+input.ng-valid {
+    border-bottom: 3px solid green
+}
+
+.error{
+    color:red
+}

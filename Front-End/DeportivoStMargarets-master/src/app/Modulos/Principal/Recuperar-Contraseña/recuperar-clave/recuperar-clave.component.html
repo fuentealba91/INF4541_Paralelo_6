@@ -1,0 +1,70 @@
+<div class="container-fluid">
+    <br>
+    <h1>Recuperar Contraseña</h1>
+    <br>
+    <form *ngIf="this.bandera == false" [formGroup]="formulario" class="row g-3" (submit)="validarRespuesta()">
+        <div class="col-md-12">
+            <label for="correo" class="form-label">Correo</label>
+            <input type="email" class="form-control form-control-sm" formControlName="correo" id="correo">
+            <div *ngIf="(submitted2 && formulario.get('correo')?.errors) || (formulario.get('correo')?.touched && formulario.get('correo')?.errors)">
+                <span class="error" *ngIf="formulario.get('correo')?.hasError('required')">El correo es requerido</span>
+                <span class="error" *ngIf="formulario.get('correo')?.hasError('email')">El formato de correo no es válido</span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="pregunta" class="form-label">Ciudad de nacimiento</label>
+            <input type="text" class="form-control form-control-sm" formControlName="preguntaSecreta" id="pregunta" name="preguntaSecreta">
+            <div *ngIf="(submitted2 && formulario.get('preguntaSecreta')?.errors) || (formulario.get('preguntaSecreta')?.touched && formulario.get('preguntaSecreta')?.errors)">
+                <span class="error" *ngIf="formulario.get('preguntaSecreta')?.hasError('required')">La respuesta es requerida</span>
+            </div>
+        </div>
+        <div class="col-md-12" id="boton">
+            <button class="btn btn-success" type="submit">Validar Respuesta</button>
+        </div>
+    </form>
+    <form *ngIf="this.bandera == true" [formGroup]="loginForm" class="row g-3" (submit)="cambiarClave()">
+        <!-- <div class="col-md-12">
+            <label for="correo" class="form-label">Correo</label>
+            <input type="email" class="form-control form-control-sm" formControlName="correo" id="correo">
+            <div *ngIf="(submitted && loginForm.get('correo')?.errors) || (loginForm.get('correo')?.touched && loginForm.get('correo')?.errors)">
+                <span class="error" *ngIf="loginForm.get('correo')?.hasError('required')">El correo es requerido</span>
+                <span class="error" *ngIf="loginForm.get('correo')?.hasError('email')">El formato de correo no es válido</span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="pregunta" class="form-label">Ciudad de nacimiento</label>
+            <input type="text" class="form-control form-control-sm" formControlName="preguntaSecreta" id="pregunta" name="preguntaSecreta">
+            <div *ngIf="(submitted && loginForm.get('preguntaSecreta')?.errors) || (loginForm.get('preguntaSecreta')?.touched && loginForm.get('preguntaSecreta')?.errors)">
+                <span class="error" *ngIf="loginForm.get('preguntaSecreta')?.hasError('required')">La respuesta es requerida</span>
+            </div>
+        </div> -->
+        <div class="col-md-12">
+            <label for="clave" class="form-label">Nueva Contraseña</label>
+            <input type="password" class="form-control form-control-sm" formControlName="password" id="clave" name="clave">
+            <div *ngIf="(submitted && loginForm.get('password')?.errors) || (loginForm.get('password')?.touched && loginForm.get('password')?.errors)">
+                <span class="error" *ngIf="loginForm.get('password')?.hasError('required')">Contraseña es requerida</span>
+                <span class="error" *ngIf="loginForm.get('password')?.hasError('pattern')">Contraseña debe contener 1 mayúscula, 1 minúscula, 1 número, 1 cáracter especial y al menos 6 caracteres</span>
+                <span class="error" *ngIf="compararClaves() == false">Las contraseñas deben ser iguales</span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="confirme" class="form-label">Confirme Contraseña</label>
+            <input type="password" class="form-control form-control-sm" formControlName="confirm_password" id="confirme" name="confirme">
+            <div *ngIf="(submitted && loginForm.get('confirm_password')?.errors) || (loginForm.get('confirm_password')?.touched && loginForm.get('confirm_password')?.errors)">
+                <span class="error" *ngIf="loginForm.get('confirm_password')?.hasError('required')">Contraseña es requerida</span>
+                <span class="error" *ngIf="loginForm.get('confirm_password')?.hasError('pattern')">Contraseña debe contener 1 mayúscula, 1 minúscula, 1 número, 1 cáracter especial y al menos 6 caracteres</span>
+                <span class="error" *ngIf="compararClaves() == false">Las contraseñas deben ser iguales</span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <re-captcha (resolved)="resolved($event)" [siteKey]="sitekey"></re-captcha>
+            <div *ngIf="(submitted && this.flag == false)">
+                <span class="error">Captcha es requerido</span>
+            </div>
+        </div>
+        <div class="col-md-12" id="boton">
+            <button class="btn btn-success" type="submit">Cambiar Contraseña</button>
+        </div>
+    </form>
+    <br>
+</div>

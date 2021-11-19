@@ -1,0 +1,15 @@
+.carousel-inner
+{
+    height: 900px;
+    width: 100%;
+}
+
+.carousel-inner >.carousel-item img
+{
+    height: 900px;
+}
+
+.row
+{
+    margin-top: 77px;
+}

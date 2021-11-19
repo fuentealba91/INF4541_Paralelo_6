@@ -1,0 +1,30 @@
+<section class="photo-gallery" id="galeria">
+    <div class="container">
+        <div class="intro">
+            <h2 class="text-center">Galería de Fotos</h2>
+            <p class="text-center">Nunc luctus in metus eget fringilla. Aliquam sed justo ligula. Vestibulum nibh erat, pellentesque ut laoreet vitae. </p>
+        </div>
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-4 col-sm-6" *ngFor="let foto of fotos">
+                        <div class="card" style="width: 20rem; margin-left: auto; margin-right: auto;" [routerLink]="'/galerias'">
+                            <img src="http://localhost:80/PHP_BDD/Archivos/FotosGaleria/{{foto.foto}}" width="450px" height="300px" class="card-img-top" style="width: 100%; height: 15vw; object-fit: polyfill; cursor: pointer">
+                        </div>
+                    <div class="card-header" style="width: 20rem; margin-left: auto; margin-right: auto;">
+                        <div class="card-title">
+                            <p>{{foto.galeria | titlecase}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="row photos" data-bss-baguettebox="">
+            <div class="col-sm-6 col-md-4 col-lg-3 item"><a href="../../../../assets/desk.jpg"><img class="img-fluid" src="../../../../assets/desk.jpg"></a></div>
+            <div class="col-sm-6 col-md-4 col-lg-3 item"><a href="../../../../assets/building.jpg"><img class="img-fluid" src="../../../../assets/building.jpg"></a></div>
+            <div class="col-sm-6 col-md-4 col-lg-3 item"><a href="../../../../assets/loft.jpg"><img class="img-fluid" src="../../../../assets/loft.jpg"></a></div>
+            <div class="col-sm-6 col-md-4 col-lg-3 item"><a href="../../../../assets/building.jpg"><img class="img-fluid" src="../../../../assets/building.jpg"></a></div>
+            <div class="col-sm-6 col-md-4 col-lg-3 item"><a href="../../../../assets/loft.jpg"><img class="img-fluid" src="../../../../assets/loft.jpg"></a></div>
+            <div class="col-sm-6 col-md-4 col-lg-3 item"><a href="../../../../assets/desk.jpg"><img class="img-fluid" src="../../../../assets/desk.jpg"></a></div>
+        </div> -->
+    </div>
+</section>

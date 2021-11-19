@@ -1,0 +1,380 @@
+<!--MOSTRAR PERSONA-->
+<div style="margin-top: 100px;">
+    <mat-toolbar color="secondary">
+        <mat-toolbar-row>
+            <button mat-icon-button>
+                <mat-icon (click)="sidenav.toggle();">menu</mat-icon>
+            </button>
+            <h1 class="ms-auto" *ngFor="let persona of this.perfil">{{persona.nombre}} {{persona.a_paterno}}</h1>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-sidenav-container>
+        <mat-sidenav #sidenav>
+            <mat-nav-list>
+                <a mat-list-item [routerLink]="'/menu-principal'">Inicio</a>
+                <a mat-list-item [routerLink]="'/perfil'">Mi Perfil</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/menu-rol'">Mantenedor de Datos</a>
+                <a mat-list-item [routerLink]="'/menu-deporte'">Deportivo</a>
+                <a mat-list-item [routerLink]="'/menu-socios'">Administrativo</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/mantenedor-contacto'">Mensajes</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null || rolSecreDir != null" [routerLink]="'/gestor-solicitudes'">Solicitudes</a>
+            </mat-nav-list>
+        </mat-sidenav>
+            <mat-sidenav-content>
+            <div class="container-fluid">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="main-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a [routerLink]="'/menu-principal'">Inicio</a></li>
+                        <li class="breadcrumb-item"><a [routerLink]="'/menu-rol'">Mantenedor-Datos</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Administrador-Personas</li>
+                    </ol>
+                </nav>
+                <!-- /Breadcrumb -->
+                <h1>
+                    Administrador de Personas
+                </h1>
+                <div id="table" class="table-editable">
+                    <table class="table table-responsive-sm table-striped text-center">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Rut</th>
+                                <th>Nombres</th>
+                                <th>Apellido Paterno</th>
+                                <th>Apellido Materno</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><button class="btn btn-success" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalAgregarPersona">Agregar</button></td>
+                            </tr> -->
+                            <tr *ngFor="let persona of personas">
+                                <td>{{persona.id_persona   }}</td>
+                                <td>{{persona.rut          }}</td>
+                                <td>{{persona.nombre       }}</td>
+                                <td>{{persona.a_paterno    }}</td>
+                                <td>{{persona.a_materno    }}</td>
+                                <td> 
+                                    <i class="fas fa-edit fa-2x" id="editar" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalEditarPersona" (click)="detallePersona(persona.id_persona)"></i>
+                                    <!-- <i class="fas fa-trash fa-2x" id="eliminar" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalEliminarPersona" (click)="detallePersona(persona.id_persona)"></i> -->
+                                </td> 
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>
+<!--MOSTRAR PERSONA-->
+
+<!--AGREGAR PERSONA-->
+<!-- <div class="modal fade" id="modalAgregarPersona" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Persona</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="row g-3 needs-validation" novalidate>
+                    <div class="col-md-12">
+                        <label for="rut" class="form-label">Rut</label>
+                        <input type="text" class="form-control form-control-sm" id="rut" name="rut" [(ngModel)]="persona.rut" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control form-control-sm" id="nombre" name="nombre" [(ngModel)]="persona.nombre" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="paterno" class="form-label">Apellido Paterno</label>
+                        <input type="text" class="form-control form-control-sm" id="paterno" name="paterno" [(ngModel)]="persona.aPaterno" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="materno" class="form-label">Apellido Materno</label>
+                        <input type="text" class="form-control form-control-sm" id="materno" name="materno" [(ngModel)]="persona.aMaterno" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="correo" class="form-label">Correo</label>
+                        <input type="email" class="form-control form-control-sm" id="correo" name="correo" [(ngModel)]="persona.correo" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input type="text" class="form-control form-control-sm" id="telefono" name="telefono" [(ngModel)]="persona.telefono" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="emergencia" class="form-label">Teléfono de Emergencia</label>
+                        <input type="text" class="form-control form-control-sm" id="emergencia" name="emergencia" [(ngModel)]="persona.tEmergencia" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="nacimiento" class="form-label">Fecha de Nacimiento</label>
+                        <input type="date" class="form-control form-control-sm" id="nacimiento" name="nacimineto" [(ngModel)]="persona.fNacimiento" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="comuna" class="form-label">Comuna</label>
+                        <input type="text" class="form-control form-control-sm" id="comuna" name="comuna" [(ngModel)]="persona.comuna" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="direccion" class="form-label">Direccion</label>
+                        <input type="text" class="form-control form-control-sm" id="direccion" name="direccion" [(ngModel)]="persona.direccion" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="genero" class="form-label form-select-sm">Genero</label>
+                        <select class="form-select" [(ngModel)]="persona.sexo" name="sexo">
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
+                            <option value="F">No definido</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" (click)="agregarPersona()">Agregar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> -->
+<!--AGREGAR PERSONA-->
+
+<!--AGREGAR APODERADO-->
+<!-- <div class="modal fade" id="modalAgregarApoderado" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Apoderado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="row g-3 needs-validation" novalidate>
+                    <div class="col-md-12">
+                        <label for="idApoderado" class="form-label">Rut Apoderado</label>
+                        <input type="text" class="form-control form-control-sm" id="idApoderado" name="idApoderado" [(ngModel)]="persona.idApoderado" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="agregarPersona()">Agregar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div> -->
+<!--AGREGAR APODERADO-->
+
+<!--EDITAR PERSONA-->
+<div class="modal fade" id="modalEditarPersona" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Persona</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- <div class="modal-body" *ngFor="let persona of det"> -->
+            <div class="modal-body">
+                <form [formGroup]="loginForm" class="row g-3" (submit)="editarPersona()">
+                    <div class="col-md-12">
+                        <label for="rut" class="form-label">Rut</label>
+                        <input type="tel" class="form-control form-control-sm" formControlName="rut" id="rut" (change)="formatRut()">
+                        <div *ngIf="(submitted && loginForm.get('rut')?.errors) || (loginForm.get('rut')?.touched && loginForm.get('rut')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('rut')?.hasError('required')">Rut es requerido</span> 
+                            <span class="error" *ngIf="this.rutValidated == false">Rut no válido</span>
+                        </div>
+                        <div *ngIf="this.rutValidated == false">
+                            <span class="error" *ngIf="this.rutValidated == false">Rut no válido</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="tel" class="form-control form-control-sm" formControlName="nombre" id="nombre">
+                        <div *ngIf="(submitted && loginForm.get('nombre')?.errors) || (loginForm.get('nombre')?.touched && loginForm.get('nombre')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('nombre')?.hasError('required')">El nombre es requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="segundo" class="form-label">Segundo Nombre (Alternativo)</label>
+                        <input type="tel" class="form-control form-control-sm" formControlName="segundo" id="segundo">
+                    </div>
+                    <div class="col-md-12">
+                        <label for="paterno" class="form-label">Apellido Paterno</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="paterno" id="paterno">
+                        <div *ngIf="(submitted && loginForm.get('paterno')?.errors) || (loginForm.get('paterno')?.touched && loginForm.get('paterno')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('paterno')?.hasError('required')">El apellido paterno es requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="materno" class="form-label">Apellido Materno</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="materno" id="materno">
+                        <div *ngIf="(submitted && loginForm.get('materno')?.errors) || (loginForm.get('materno')?.touched && loginForm.get('materno')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('materno')?.hasError('required')">El apellido materno es requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="correo" class="form-label">Correo</label>
+                        <input type="email" class="form-control form-control-sm" formControlName="correo" id="correo">
+                        <div *ngIf="(submitted && loginForm.get('correo')?.errors) || (loginForm.get('correo')?.touched && loginForm.get('correo')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('correo')?.hasError('required')">El correo es requerido</span>
+                            <span class="error" *ngIf="loginForm.get('correo')?.hasError('email')">El formato de correo no es válido</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="telefono" id="telefono">
+                        <div *ngIf="(submitted && loginForm.get('telefono')?.errors) || (loginForm.get('telefono')?.touched && loginForm.get('telefono')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('telefono')?.hasError('required')">El teléfono es requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="nacimiento" class="form-label">Fecha de Nacimiento</label>
+                        <input type="date" class="form-control form-control-sm" formControlName="nacimiento" id="nacimiento">
+                        <div *ngIf="(submitted && loginForm.get('nacimiento')?.errors) || (loginForm.get('nacimiento')?.touched && loginForm.get('nacimiento')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('nacimiento')?.hasError('required')">La fecha de nacimiento es requerida</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="comuna" class="form-label">Comuna</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="comuna" id="comuna">
+                        <div *ngIf="(submitted && loginForm.get('comuna')?.errors) || (loginForm.get('comuna')?.touched && loginForm.get('comuna')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('comuna')?.hasError('required')">La comuna es requerida</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="direccion" class="form-label">Direccion</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="direccion" id="direccion">
+                        <div *ngIf="(submitted && loginForm.get('direccion')?.errors) || (loginForm.get('direccion')?.touched && loginForm.get('direccion')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('direccion')?.hasError('required')">La dirección es requerida</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="genero" class="form-label form-select-sm">Genero</label>
+                        <select class="form-select" formControlName="sexo">
+                            <option value="" selected>Escoger</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
+                            <option value="ND">No definido</option>
+                        </select>
+                        <div *ngIf="(submitted && loginForm.get('sexo')?.errors) || (loginForm.get('sexo')?.touched && loginForm.get('sexo')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('sexo')?.hasError('required')">El genero es requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="clave" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control form-control-sm" formControlName="password" id="clave" name="clave">
+                        <div *ngIf="(submitted && loginForm.get('password')?.errors) || (loginForm.get('password')?.touched && loginForm.get('password')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('password')?.hasError('required')">Contraseña es requerida</span>
+                            <span class="error" *ngIf="loginForm.get('password')?.hasError('pattern')">Contraseña debe contener 1 mayúscula, 1 minúscula, 1 número, 1 cáracter especial y al menos 6 caracteres</span>
+                            <span class="error" *ngIf="compararClaves() == false">Las contraseñas deben ser iguales</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="confirme" class="form-label">Confirme Contraseña</label>
+                        <input type="password" class="form-control form-control-sm" formControlName="confirm_password" id="confirme" name="confirme">
+                        <div *ngIf="(submitted && loginForm.get('confirm_password')?.errors) || (loginForm.get('confirm_password')?.touched && loginForm.get('confirm_password')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('confirm_password')?.hasError('required')">Contraseña es requerida</span>
+                            <span class="error" *ngIf="loginForm.get('confirm_password')?.hasError('pattern')">Contraseña debe contener 1 mayúscula, 1 minúscula, 1 número, 1 cáracter especial y al menos 6 caracteres</span>
+                            <span class="error" *ngIf="compararClaves() == false">Las contraseñas deben ser iguales</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="pregunta" class="form-label">Ciudad de nacimiento (La respuesta será necesaria para cambio de contraseña)</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="preguntaSecreta" id="pregunta" name="preguntaSecreta">
+                        <div *ngIf="(submitted && loginForm.get('preguntaSecreta')?.errors) || (loginForm.get('preguntaSecreta')?.touched && loginForm.get('preguntaSecreta')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('preguntaSecreta')?.hasError('required')">La respuesta es requerida</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12" id="boton">
+                        <button class="btn btn-success" type="submit">Editar</button>
+                    </div>
+                    <div class="col-md-12"></div>
+                </form>
+                <!-- <form class="row g-3 needs-validation" novalidate>
+                    <div class="col-md-12">
+                        <label for="id" class="form-label">Id</label>
+                        <input type="text" class="form-control form-control-sm" id="mId" name="id" [(ngModel)]="persona.id_Persona" required disabled>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="rut" class="form-label">Rut</label>
+                        <input type="text" class="form-control form-control-sm" id="mRut" name="rut" [(ngModel)]="persona.rut" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control form-control-sm" id="mNombre" name="nombre" [(ngModel)]="persona.nombre" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="paterno" class="form-label">Apellido Paterno</label>
+                        <input type="text" class="form-control form-control-sm" id="mPaterno" name="paterno" [(ngModel)]="persona.a_paterno" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="materno" class="form-label">Apellido Materno</label>
+                        <input type="text" class="form-control form-control-sm" id="mMaterno" name="materno" [(ngModel)]="persona.a_materno" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="correo" class="form-label">Correo</label>
+                        <input type="email" class="form-control form-control-sm" id="mCorreo" name="correo" [(ngModel)]="persona.correo" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input type="text" class="form-control form-control-sm" id="mTelefono" name="telefono" [(ngModel)]="persona.telefono" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="emergencia" class="form-label">Teléfono de Emergencia</label>
+                        <input type="text" class="form-control form-control-sm" id="mEmergencia" name="emergencia" [(ngModel)]="persona.tel_emergencia" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="nacimiento" class="form-label">Fecha de Nacimiento</label>
+                        <input type="date" class="form-control form-control-sm" id="mNacimiento" name="nacimineto" [(ngModel)]="persona.f_nacimiento" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="comuna" class="form-label">Comuna</label>
+                        <input type="text" class="form-control form-control-sm" id="mComuna" name="comuna" [(ngModel)]="persona.comuna" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="direccion" class="form-label">Direccion</label>
+                        <input type="text" class="form-control form-control-sm" id="mDireccion" name="direccion" [(ngModel)]="persona.direccion" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="genero" class="form-label form-select-sm">Genero</label>
+                        <select class="form-select" [(ngModel)]="persona.sexo" name="sexo" id="mSexo">
+                            <option value="" selected>Escoger</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" (click)="editarPersona()">Editar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div> -->
+        </div>
+    </div>
+</div>
+<!--EDITAR PERSONA-->
+
+<!--MODAL ELIMINAR PERSONA-->
+<!-- <div class="modal fade" id="modalEliminarPersona" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Eliminar Persona</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5 *ngFor="let persona of det">¿Está seguro de eliminar a {{persona.nombre}} {{persona.a_paterno}} {{persona.a_materno}}, Rut: {{persona.rut}}?</h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="btnEliminar" *ngFor="let persona of det" (click)="eliminarPersona(persona.id_Persona)">Eliminar</button>
+          <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+</div> -->
+<!--MODAL ELIMINAR PERSONA-->

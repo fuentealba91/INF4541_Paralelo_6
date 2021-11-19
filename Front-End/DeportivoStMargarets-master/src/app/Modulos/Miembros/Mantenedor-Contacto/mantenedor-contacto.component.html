@@ -1,0 +1,115 @@
+<!--MOSTRAR CONTACTO-->
+<div style="margin-top: 100px;">
+    <mat-toolbar color="secondary">
+        <mat-toolbar-row>
+            <button mat-icon-button>
+                <mat-icon (click)="sidenav.toggle();">menu</mat-icon>
+            </button>
+            <h1 class="ms-auto" *ngFor="let persona of this.persona">{{persona.nombre}} {{persona.a_paterno}}</h1>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-sidenav-container>
+        <mat-sidenav #sidenav>
+            <mat-nav-list>
+                <a mat-list-item [routerLink]="'/menu-principal'">Inicio</a>
+                <a mat-list-item [routerLink]="'/perfil'">Mi Perfil</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/menu-rol'">Mantenedor de Datos</a>
+                <a mat-list-item [routerLink]="'/menu-deporte'">Deportivo</a>
+                <a mat-list-item [routerLink]="'/menu-socios'">Administrativo</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/mantenedor-contacto'">Mensajes</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null || rolSecreDir != null" [routerLink]="'/gestor-solicitudes'">Solicitudes</a>
+            </mat-nav-list>
+        </mat-sidenav>
+        <mat-sidenav-content style="min-height: 400px;">
+            <div class="container-fluid">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="main-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a [routerLink]="'/menu-principal'">Inicio</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Mantenedor-Contacto</li>
+                    </ol>
+                </nav>
+                <!-- /Breadcrumb -->
+                <h1>
+                    Mensajes
+                </h1>
+                <div id="table" class="table-editable">
+                    <table class="table table-responsive-sm table-striped text-center">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre</th>
+                                <th>Asunto</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let contacto of contactos">
+                                <td *ngIf="contacto.estado == true" style="font-weight: bold;">{{contacto.idContacto }}</td>
+                                <td *ngIf="contacto.estado != true">{{contacto.idContacto }}                           </td>
+                                <td *ngIf="contacto.estado == true" style="font-weight: bold;">{{contacto.nombre     }}</td>
+                                <td *ngIf="contacto.estado != true">{{contacto.nombre     }}                           </td>
+                                <td *ngIf="contacto.estado == true" style="font-weight: bold;">{{contacto.asunto     }}</td>
+                                <td *ngIf="contacto.estado != true">{{contacto.asunto     }}                           </td>
+                                <td *ngIf="contacto.estado == true" style="font-weight: bold;">{{contacto.fecha      }}</td>
+                                <td *ngIf="contacto.estado != true">{{contacto.fecha      }}                           </td>
+                                <td *ngIf="contacto.estado == true" style="font-weight: bold;">Nuevo                   </td>
+                                <td *ngIf="contacto.estado != true">Leido</td>
+                                <td> 
+                                    <i class="far fa-file fa-2x" id="detalle" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalDetalleContacto" (click)="detalleContactoId(contacto.idContacto)"></i>
+                                    <i class="fas fa-trash fa-2x" id="eliminar" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalEliminarContacto" (click)="detalleContactoId(contacto.idContacto)"></i>
+                                </td> 
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>
+<!--MOSTRAR CONTACTO-->
+
+<!--MODAL ELIMINAR CONTACTO-->
+<div class="modal fade" id="modalEliminarContacto" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Eliminar Contacto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <h5 *ngFor="let contacto of det">¿Está seguro de eliminar a {{contacto.nombre}}?</h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="btnEliminar" *ngFor="let contacto of det" (click)="eliminarContacto(contacto.idContacto)">Eliminar</button>
+          <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+</div>
+<!--MODAL ELIMINAR CONTACTO-->
+
+<!--MODAL DETALLE CONTACTO-->
+<div class="modal fade" id="modalDetalleContacto" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel" *ngFor="let contacto of det">{{contacto.asunto}}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <h5 *ngFor="let contacto of det">Nombre: {{contacto.nombre}}</h5>
+            <h5 *ngFor="let contacto of det">Correo: {{contacto.correo}}</h5>
+            <h5 *ngFor="let contacto of det">Teléfono: {{contacto.telefono}}</h5>
+            <h5 *ngFor="let contacto of det">Mensaje: {{contacto.mensaje}}</h5>
+            <h5 *ngFor="let contacto of det">Fecha: {{contacto.fecha}}</h5>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+        </div>
+    </div>
+</div>
+<!--MODAL DETALLE CONTACTO-->

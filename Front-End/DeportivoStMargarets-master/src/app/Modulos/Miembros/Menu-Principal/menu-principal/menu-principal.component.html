@@ -1,0 +1,74 @@
+<div style="margin-top: 100px;">
+    <mat-toolbar color="secondary">
+        <mat-toolbar-row>
+            <button mat-icon-button>
+                <mat-icon (click)="sidenav.toggle();">menu</mat-icon>
+            </button>
+            <h1 class="ms-auto" *ngFor="let persona of this.persona">{{persona.nombre}} {{persona.a_paterno}}</h1>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-sidenav-container>
+        <mat-sidenav #sidenav>
+            <mat-nav-list>
+                <a mat-list-item [routerLink]="'/menu-principal'">Inicio</a>
+                <a mat-list-item [routerLink]="'/perfil'">Mi Perfil</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/menu-rol'">Mantenedor de Datos</a>
+                <a mat-list-item [routerLink]="'/menu-deporte'">Deportivo</a>
+                <a mat-list-item *ngIf="validarEdad()" [routerLink]="'/menu-socios'">Administrativo</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/mantenedor-contacto'">Mensajes</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null || rolSecreDir != null" [routerLink]="'/gestor-solicitudes'">Solicitudes</a>
+            </mat-nav-list>
+        </mat-sidenav>
+        <mat-sidenav-content>
+            <div style="height:88vh;">
+                <div class="contenedor">
+                    <section class="features-boxed">
+                        <div class="container">
+                            <div class="row justify-content-center features">
+                                <div class="col-sm-6 col-md-5 col-lg-4 item">
+                                    <div class="box"><i class="fas fa-users icon"></i>
+                                        <h3 class="name">Mi Perfil</h3>
+                                        <a class="learn-more" [routerLink]="'/perfil'">Entrar »</a>
+                                        <!-- <a class="learn-more" [routerLink]="'/mantenedor-directiva'">Directiva »</a> -->
+                                    </div>
+                                </div>
+                                <div *ngIf="((rolAdmin != null || rolSecretario != null)&&(validarEdad()))" class="col-sm-6 col-md-5 col-lg-4 item">
+                                    <div class="box"><i class="fas fa-cogs icon"></i>
+                                        <h3 class="name">Mantenedor de Datos</h3>
+                                        <a class="learn-more" [routerLink]="'/menu-rol'">Entrar »</a>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-5 col-lg-4 item">
+                                    <div class="box"><i class="far fa-futbol icon"></i>
+                                        <h3 class="name">Deportivo</h3>
+                                        <a class="learn-more" [routerLink]="'/menu-deporte'">Entrar »</a>
+                                    </div>
+                                </div>
+                                <div *ngIf="validarEdad()" class="col-sm-6 col-md-5 col-lg-4 item">
+                                    <div class="box"><i class="fa fa-clock-o icon"></i>
+                                        <h3 class="name">Administrativo</h3>
+                                        <a class="learn-more" [routerLink]="'/menu-socios'">Entrar »</a>
+                                    </div>
+                                </div>
+                                <div *ngIf="((rolAdmin != null || rolSecretario != null)&& (validarEdad()))" class="col-sm-6 col-md-5 col-lg-4 item">
+                                    <div class="box"><i class="far fa-envelope icon"></i>
+                                        <h3 class="name" *ngIf="contador > 0">Mensajes ({{contador}} Nuevos)</h3>
+                                        <h3 class="name" *ngIf="contador == null">Mensajes (0 Nuevos)</h3>
+                                        <a class="learn-more" [routerLink]="'/mantenedor-contacto'">Entrar »</a>
+                                    </div>
+                                </div>
+                                <div *ngIf="((rolAdmin != null || rolSecretario != null || rolSecreDir != null) && (validarEdad()))" class="col-sm-6 col-md-5 col-lg-4 item">
+                                    <div class="box"><i class="fas fa-exclamation-circle icon"></i>
+                                        <h3 class="name">Solicitudes</h3>
+                                        <!-- <p class="description">Aceptar, Rechazar Socios y Deportistas</p> -->
+                                        <a class="learn-more" [routerLink]="'/gestor-solicitudes'">Entrar »</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>

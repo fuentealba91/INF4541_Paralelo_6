@@ -1,0 +1,42 @@
+#contacto
+{
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#cont
+{
+    background-color: rgb(190, 189, 187);
+}
+
+#boton
+{
+    text-align: center;
+}
+
+h1
+{
+    text-align: center;
+}
+
+input.ng-dirty.ng-invalid, textarea.ng-dirty.ng-invalid{
+    border: 2px solid red
+}
+
+input.ng-valid, textarea.ng-valid{
+    border: 2px solid green
+}
+
+input:invalid {
+    border: 2x solid red;
+}
+
+.error{
+    color:red
+}
+
+
+
+
+

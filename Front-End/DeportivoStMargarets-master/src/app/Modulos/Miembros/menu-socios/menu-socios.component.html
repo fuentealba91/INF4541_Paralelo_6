@@ -1,0 +1,246 @@
+<div style="margin-top: 100px;">
+    <mat-toolbar color="secondary">
+        <mat-toolbar-row>
+            <button mat-icon-button>
+                <mat-icon (click)="sidenav.toggle();">menu</mat-icon>
+            </button>
+            <h1 class="ms-auto" *ngFor="let persona of this.persona">{{persona.nombre}} {{persona.a_paterno}}</h1>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-sidenav-container>
+        <mat-sidenav #sidenav>
+            <mat-nav-list>
+                <a mat-list-item [routerLink]="'/menu-principal'">Inicio</a>
+                <a mat-list-item [routerLink]="'/perfil'">Mi Perfil</a>
+                <a mat-list-item *ngIf="rolAdministrador != null || rolSecretario != null" [routerLink]="'/menu-rol'">Mantenedor de Datos</a>
+                <a mat-list-item [routerLink]="'/menu-deporte'">Deportivo</a>
+                <a mat-list-item [routerLink]="'/menu-socios'">Administrativo</a>
+                <a mat-list-item *ngIf="rolAdministrador != null || rolSecretario != null" [routerLink]="'/mantenedor-contacto'">Mensajes</a>
+                <a mat-list-item *ngIf="rolAdministrador != null || rolSecretario != null || rolSecreDir != null" [routerLink]="'/gestor-solicitudes'">Solicitudes</a>
+            </mat-nav-list>
+        </mat-sidenav>
+        <mat-sidenav-content>
+            <div style="height:88vh;">
+                <div class="contenedor">
+                    <section class="features-boxed">
+                        <div class="container">
+                            <!-- Breadcrumb -->
+                            <nav aria-label="breadcrumb" class="main-breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a [routerLink]="'/menu-principal'">Inicio</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Menu-Administrativo</li>
+                                </ol>
+                            </nav>
+                            <!-- /Breadcrumb -->
+                            <div class="row justify-content-center features">
+                                <div *ngIf="rolAdministrador == true || cargo == true" class="col-sm-6 col-md-5 col-lg-4 item">
+                                    <div class="box"><i class="fas fa-cogs icon"></i>
+                                        <h3 class="name">Tipos de Reuniones</h3>
+                                        <!-- <p class="description">Agregar, Mostrar, Modificar, Eliminar Tipos de reuniones</p> -->
+                                        <a class="learn-more" [routerLink]="'/tipo-reunion'">Entrar »</a>
+                                    </div>
+                                </div>
+                                <div *ngIf="rolAdministrador == true || cargo == true || rolSecreDir != null" class="col-sm-6 col-md-5 col-lg-4 item">
+                                    <div class="box"><i class="fa fa-clock-o icon"></i>
+                                        <h3 class="name">Administrador de Reuniones</h3>
+                                        <!-- <p class="description">Agendar, Mostrar, Eliminar Reuniones</p> -->
+                                        <a class="learn-more" [routerLink]="'/reunion'">Entrar »</a>
+                                    </div>
+                                </div>
+                                <div *ngIf="rolAdministrador == true || rolSecreDir != null" class="col-sm-6 col-md-5 col-lg-4 item">
+                                    <div class="box"><i class="fas fa-users icon"></i>
+                                        <h3 class="name">Gestionar Socios</h3>
+                                        <!-- <p class="description">Agendar, Mostrar, Eliminar Reuniones</p> -->
+                                        <a class="learn-more" [routerLink]="'/gestor-socios'">Entrar »</a>
+                                    </div>
+                                </div>
+                                <div *ngIf="rolSocio == false && pendiente == false" class="col-sm-6 col-md-5 col-lg-4 item">
+                                    <div class="box" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalDatosSocio">
+                                        <i class="fas fa-plus-circle icon"></i>
+                                        <h3 class="name">Hacerme Socio</h3>
+                                        <a class="learn-more">Entrar »</a>
+                                    </div>
+                                </div>
+                                <div *ngIf="rolSocio == true" class="col-sm-6 col-md-5 col-lg-4 item">
+                                    <div class="box" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalConfirmacion">
+                                        <i class="fas fa-plus-circle icon"></i>
+                                        <h3 class="name">Dejar de ser Socio</h3>
+                                        <a class="learn-more">Entrar »</a>
+                                    </div>
+                                </div>
+                                <div *ngIf="pendiente == true" class="col-sm-6 col-md-5 col-lg-4 item">
+                                    <div class="box">
+                                        <i class="fas fa-plus-circle icon"></i>
+                                        <h3 class="name">Socio Pendiente</h3>
+                                    </div>
+                                </div>
+                                <div *ngIf="rolSocio == true || rolAdministrador == true" class="col-sm-6 col-md-5 col-lg-4 item">
+                                    <div class="box">
+                                        <h3 class="name">Asambleas</h3>
+                                        <a class="learn-more" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalAsambleasProximas" (click)="listasProximasAsambleas()">Entrar »</a>
+                                        <hr>
+                                        <h3 class="name">Invitaciones</h3>
+                                        <a class="learn-more" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalInvitacionesProximas" (click)="listarReunionIdPersona()">Entrar »</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>
+
+<!--FORMULARIO DE SOCIO-->
+<div class="modal fade" id="modalDatosSocio" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Registro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="loginForm" class="row g-3 needs-validation" (submit)= "registrarSocio()">
+                    <div class="col-md-12">
+                        <label for="profesion" class="form-label">Profesión u Oficio</label>
+                        <input type="text" class="form-control form-control-sm" id="profesion" formControlName="profesion" required>
+                        <div *ngIf="(submitted && loginForm.get('profesion')?.errors) || (loginForm.get('profesion')?.touched && loginForm.get('profesion')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('profesion')?.hasError('required')">La profesión u oficio es requerida</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="relacion" class="form-label">Relación con el colegio</label>
+                        <select class="form-select form-select-sm" id="relacion" formControlName="relacion">
+                            <option value='' selected>Escoger</option>
+                            <option value=2>Interna (Ex Alumna, Profesor, Administrativo)</option>
+                            <option value=3>Externa (Apoderado, Miembro del Club)</option>
+                        </select>
+                        <div *ngIf="(submitted && loginForm.get('relacion')?.errors) || (loginForm.get('relacion')?.touched && loginForm.get('relacion')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('relacion')?.hasError('required')">La relación es requerida</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <input type="checkbox" id="terminos" formControlName="terminos">
+                        <label for="terminos" class="lbl">Acepto Terminos y Condiciones <a href="http://localhost:80/PHP_BDD/Archivos/Documentos/INF4541 Paralelo 6.pdf" target="_blank">Documento</a></label>
+                        <div *ngIf="(submitted && loginForm.get('terminos')?.errors) || (loginForm.get('relacion')?.touched && loginForm.get('terminos')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('terminos')?.hasError('required')">Debe aceptar terminos y condiciones</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Enviar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--FORMULARIO DE SOCIO-->
+
+<!--DEJAR DE SER SOCIO-->
+<div class="modal fade" id="modalConfirmacion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Eliminar Socio</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5>¿Está seguro de dejar de ser socio?</h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="btnEliminar" (click)="eliminarSocio()">Eliminar</button>
+          <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+</div>
+<!--DEJAR DE SER SOCIO-->
+
+<!--PROXIMAS ASAMBLEAS-->
+<div class="modal fade" id="modalAsambleasProximas" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Próximas Asambleas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="table" class="table-editable">
+                    <table class="table table-responsive-sm table-striped text-center">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Descripción</th>
+                                <th>Puntos a Tratar</th>
+                                <th>Lugar</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let proximos of reuniones">
+                                <td>    {{ proximos.descripcion  }}  </td>
+                                <td>
+                                    <textarea disabled>{{ proximos.puntosTratar }}</textarea>
+                                </td>
+                                <td>    {{ proximos.lugar        }}  </td>
+                                <td>    {{ proximos.fecha        }}  </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--PROXIMAS ASAMBLEAS-->
+
+<!--INVITACIONES-->
+<div class="modal fade" id="modalInvitacionesProximas" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Invitaciones Próximas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="table" class="table-editable">
+                    <table class="table table-responsive-sm table-striped text-center">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Descripción</th>
+                                <th>Puntos a Tratar</th>
+                                <th>Lugar</th>
+                                <th>Fecha</th>
+                                <th>Accion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let pendientes of reuPendientes">
+                                <td>    {{ pendientes.descripcion   }}  </td>
+                                <td>
+                                    <textarea disabled>{{ pendientes.puntosTratar  }}</textarea>      
+                                </td>
+                                <td>    {{ pendientes.lugar         }}  </td>
+                                <td>    {{ pendientes.fecha         }}  </td>
+                                <td *ngIf="pendientes.asistio == 1">    Aceptado    </td>
+                                <td *ngIf="pendientes.asistio == 2">    Rechazado   </td>
+                                <td *ngIf="pendientes.asistio == 0">
+                                    <i class="far fa-check-circle fa-2x" style="cursor: pointer;" id="aceptar" (click)="aceptarInvitacion(pendientes)"></i>
+                                    <i class="far fa-times-circle fa-2x" style="cursor: pointer;" id="rechazar" (click)="rechazarInvitacion(pendientes)"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--INVITACIONES-->

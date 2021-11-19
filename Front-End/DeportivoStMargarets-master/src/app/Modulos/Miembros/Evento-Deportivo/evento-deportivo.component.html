@@ -1,0 +1,288 @@
+<!--MOSTRAR EVENTOS DEPORTIVOS-->
+<div style="margin-top: 100px; min-height: 400px;">
+<mat-toolbar color="secondary">
+    <mat-toolbar-row>
+        <button mat-icon-button>
+            <mat-icon (click)="sidenav.toggle();">menu</mat-icon>
+        </button>
+        <h1 class="ms-auto" *ngFor="let persona of this.persona">{{persona.nombre}} {{persona.a_paterno}}</h1>
+    </mat-toolbar-row>
+</mat-toolbar>
+<mat-sidenav-container>
+    <mat-sidenav #sidenav>
+        <mat-nav-list>
+            <a mat-list-item [routerLink]="'/menu-principal'">Inicio</a>
+            <a mat-list-item [routerLink]="'/perfil'">Mi Perfil</a>
+            <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/menu-rol'">Mantenedor de Datos</a>
+            <a mat-list-item [routerLink]="'/menu-deporte'">Deportivo</a>
+            <a mat-list-item [routerLink]="'/menu-socios'">Administrativo</a>
+            <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/mantenedor-contacto'">Mensajes</a>
+            <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null || rolSecreDir != null" [routerLink]="'/gestor-solicitudes'">Solicitudes</a>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <div class="container-fluid">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="main-breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="'/menu-principal'">Inicio</a></li>
+                    <li class="breadcrumb-item"><a [routerLink]="'/menu-deporte'">Menu-Deporte</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Administrador-Eventos-Deportivos</li>
+                </ol>
+            </nav>
+            <!-- /Breadcrumb -->
+            <h1>
+                Administrador de Eventos Deportivos
+            </h1>
+            <div id="table" class="table-editable">
+                <table class="table table-responsive-sm table-striped text-center">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Deporte</th>
+                            <th>Fecha</th>
+                            <th>Lugar</th>
+                            <th>Tipo</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><button class="btn btn-success" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalAgregarEventoDeportivo">Agregar</button></td>
+                        </tr>
+                        <tr *ngFor="let actividad of actividades">
+                            <td> {{ actividad.deporte         }} </td>
+                            <td> {{ actividad.fecha           }} </td>
+                            <td> {{ actividad.lugar           }} </td>
+                            <td> {{ actividad.descripcion     }} </td>
+                            <td> 
+                                <i class="fas fa-address-book fa-2x" id="asistentes" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalTomaDeAsistencia" (click)="listarDeportistasConfirmados(actividad.idActividad)"></i>
+                                <i class="fas fa-edit fa-2x" id="editar" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalAgregarResultado" (click)="detalleEventoId(actividad.idActividad)"></i>
+                                <i class="far fa-file fa-2x" id="detalle" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalDetalleEventoDeportivo" (click)="detalleEventoId(actividad.idActividad)"></i>
+                                <i class="fas fa-trash fa-2x" id="eliminar" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalEliminarEventoDeportivo" (click)="detalleEventoId(actividad.idActividad)"></i>
+                            </td> 
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>
+</div>
+<!--MOSTRAR EVENTOS DEPORTIVOS-->
+
+<!-- ASISTENCIA DEPORTISTAS -->
+<div class="modal fade" id="modalTomaDeAsistencia" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Toma de Asistencia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="confirmados = []"></button>
+            </div>
+            <div class="modal-body">
+                <div id="table" class="table-editable">
+                    <table class="table table-responsive-sm table-striped text-center">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let confirmado of confirmados">
+                                <td>{{confirmado.nombre}} {{confirmado.a_paterno}} {{confirmado.a_materno}}</td>
+                                <td *ngIf="confirmado.asistio == 1">Confirmado</td>
+                                <td *ngIf="confirmado.asistio == 3">Asistido</td>
+                                <td *ngIf="confirmado.asistio == 4">Ausente</td>
+                                <td>
+                                    <i class="far fa-check-circle fa-2x" style="cursor: pointer;" id="asiste" (click)="confirmarAsistencia(confirmado)"></i>
+                                    <i class="far fa-times-circle fa-2x" style="cursor: pointer;" id="ausente" (click)="rechazarAsistencia(confirmado)"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ASISTENCIA DEPORTISTAS -->
+
+<!-- AGREGAR EVENTO DEPORTIVO-->
+<div class="modal fade" id="modalAgregarEventoDeportivo" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Evento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="loginForm" class="row g-2 needs-validation" (submit)= "agregarEventoDeportivo()">
+                    <div class="col-sm-12">
+                        <label for="fecha" class="form-label">Fecha</label>
+                        <input type="datetime-local" class="form-control form-control-sm" id="fecha" formControlName="fecha" required>
+                        <div *ngIf="(submitted && loginForm.get('fecha')?.errors) || (loginForm.get('fecha')?.touched && loginForm.get('fecha')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('fecha')?.hasError('required')">Fecha es requerida</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label for="deporte" class="form-label">Deporte</label>
+                        <select class="form-select" name="deporte" #deporte formControlName="deporte" (click)="listarCategorias(deporte.value)" required>
+                            <option value=''>Escoger</option>
+                            <option *ngFor="let deporte of deportes" value="{{deporte.idDeporte}}">{{deporte.nombre}}</option>
+                        </select>
+                        <div *ngIf="(submitted && loginForm.get('deporte')?.errors) || (loginForm.get('deporte')?.touched && loginForm.get('deporte')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('deporte')?.hasError('required')">Deporte es requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label for="categoria" class="form-label">Categoría</label>
+                        <select class="form-select" name="categoria" formControlName="categoria" required>
+                            <option value='' selected>Escoger</option>
+                            <option *ngFor="let categoria of categorias" value="{{categoria.idCategoria}}"><label *ngIf="categoria.genero == 'M'">{{categoria.nombre}}(Masculino)</label><label *ngIf="categoria.genero == 'F'">{{categoria.nombre}}(Femenino)</label></option>
+                        </select>
+                        <div *ngIf="(submitted && loginForm.get('categoria')?.errors) || (loginForm.get('categoria')?.touched && loginForm.get('categoria')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('categoria')?.hasError('required')">Categoría es requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label for="lugar" class="form-label">Lugar</label>
+                        <input type="text" class="form-control form-control-sm" id="lugar" formControlName="lugar" required>
+                        <div *ngIf="(submitted && loginForm.get('lugar')?.errors) || (loginForm.get('lugar')?.touched && loginForm.get('lugar')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('lugar')?.hasError('required')">Lugar es requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label for="objetivo" class="form-label">Objetivo</label>
+                        <input type="text" class="form-control form-control-sm" id="objetivo" formControlName="objetivo" required>
+                        <div *ngIf="(submitted && loginForm.get('objetivo')?.errors) || (loginForm.get('objetivo')?.touched && loginForm.get('objetivo')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('objetivo')?.hasError('required')">Objetivo es requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label for="tipo" class="form-label">Tipo de Actividad</label>
+                        <select class="form-select" id="tipo" formControlName="tipo" required>
+                            <option value=''>Escoger</option>
+                            <option *ngFor="let tipo of tipos" value="{{tipo.idTipo_Actividad}}">{{tipo.descripcion}}</option>
+                        </select>
+                        <div *ngIf="(submitted && loginForm.get('tipo')?.errors) || (loginForm.get('tipo')?.touched && loginForm.get('tipo')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('tipo')?.hasError('required')">Tipo de actividad es requerido</span>
+                        </div>
+                    </div>                     
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Agregar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- AGREGAR EVENTO DEPORTIVO-->
+
+<!--MODAL ELIMINAR EVENTO DEPORTIVO-->
+<div class="modal fade" id="modalEliminarEventoDeportivo" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Eliminar Evento Deportivo</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5 *ngFor="let evento of det">¿Está seguro de eliminar el evento: {{evento.descripcion}} en el lugar: {{evento.lugar}} el día: {{evento.fecha}}?</h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="btnEliminar" *ngFor="let evento of det" (click)="eliminarEventoDeportivo(evento.idActividad)">Eliminar</button>
+          <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+</div>
+<!--MODAL ELIMINAR EVENTO DEPORTIVO-->
+
+<!--MODAL AGREGAR RESULTADO-->
+<div class="modal fade" id="modalAgregarResultado" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Resultados</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="resultadoForm" class="row g-2 needs-validation" (submit)= "agregarResultado()">
+                    <div class="col-sm-6">
+                        <label for="deporte" class="form-label">Deporte</label>
+                        <input type="text" class="form-control form-control-sm" id="deporte" formControlName="deporte" readonly required>
+                        <div *ngIf="(submitted && resultadoForm.get('deporte')?.errors) || (resultadoForm.get('deporte')?.touched && resultadoForm.get('deporte')?.errors)">
+                            <span class="error" *ngIf="resultadoForm.get('deporte')?.hasError('required')">Deporte es requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="categoria" class="form-label">Categoría</label>
+                        <input type="text" class="form-control form-control-sm" id="categoria" formControlName="categoria" readonly required>
+                        <div *ngIf="(submitted && resultadoForm.get('categoria')?.errors) || (resultadoForm.get('categoria')?.touched && resultadoForm.get('categoria')?.errors)">
+                            <span class="error" *ngIf="resultadoForm.get('categoria')?.hasError('required')">Categoría es requerida</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label for="tipo" class="form-label">Tipo de Actividad</label>
+                        <input type="text" class="form-control form-control-sm" id="tipo" formControlName="tipo" readonly required>
+                        <div *ngIf="(submitted && resultadoForm.get('tipo')?.errors) || (resultadoForm.get('tipo')?.touched && resultadoForm.get('tipo')?.errors)">
+                            <span class="error" *ngIf="resultadoForm.get('tipo')?.hasError('required')">Tipo de la actividad es requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label for="resultado" class="form-label">Resultado</label>
+                        <textarea class="form-control form-control-sm" id="resultado" formControlName="resultado"></textarea>
+                        <div *ngIf="(submitted && resultadoForm.get('resultado')?.errors) || (resultadoForm.get('resultado')?.touched && resultadoForm.get('resultado')?.errors)">
+                            <span class="error" *ngIf="resultadoForm.get('resultado')?.hasError('required')">Resultado es requerido</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Agregar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--MODAL AGREGAR RESULTADO-->
+
+<!--MOSTRAR EVENTO DEPORTIVO-->
+<div class="modal fade" id="modalDetalleEventoDeportivo" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Evento Deportivo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form *ngFor="let evento of det">
+                    <label for="fecha">Fecha</label>
+                    <input type="text" class="form-control" id="fecha" name="fecha" value={{evento.fecha}} disabled>
+                    <label for="lugar">Lugar</label>
+                    <input type="text" class="form-control" id="lugar" name="lugar" value={{evento.lugar}} autocomplete="off" disabled>
+                    <label for="deporte">Deporte</label>
+                    <input type="text" class="form-control" id="deporte" name="deporte" value={{evento.deporte}} autocomplete="off" disabled>
+                    <label for="categoria">Categoría</label>
+                    <input type="text" class="form-control" id="categoria" name="categoria" value={{evento.categoria}} autocomplete="off" disabled>
+                    <label for="objetivo">Objetivo</label>
+                    <input type="text" class="form-control" id="objetivo" name="objetivo" value={{evento.objetivo}} autocomplete="off" disabled>
+                    <label for="Tipo">Tipo de Actividad</label>
+                    <input type="text" class="form-control" id="tipo" name="tipo" value={{evento.descripcion}} autocomplete="off" disabled>
+                    <label for="deporte">Resultado</label>
+                    <textarea type="text" cols="30" rows="10" class="form-control" id="result" *ngFor="let evento of det" autocomplete="off" disabled>{{evento.resultado}}</textarea>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--MOSTRAR EVENTO DEPORTIVO-->

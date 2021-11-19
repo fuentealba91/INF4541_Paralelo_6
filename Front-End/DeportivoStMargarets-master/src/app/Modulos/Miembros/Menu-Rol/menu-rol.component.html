@@ -1,0 +1,90 @@
+<div style="margin-top: 100px; background-color: #eef4f7;">
+    <mat-toolbar color="secondary">
+        <mat-toolbar-row>
+            <button mat-icon-button>
+                <mat-icon (click)="sidenav.toggle();">menu</mat-icon>
+            </button>
+            <h1 class="ms-auto" *ngFor="let persona of this.persona">{{persona.nombre}} {{persona.a_paterno}}</h1>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-sidenav-container>
+        <mat-sidenav #sidenav>
+            <mat-nav-list>
+                <a mat-list-item [routerLink]="'/menu-principal'">Inicio</a>
+                <a mat-list-item [routerLink]="'/perfil'">Mi Perfil</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/menu-rol'">Mantenedor de Datos</a>
+                <a mat-list-item [routerLink]="'/menu-deporte'">Deportivo</a>
+                <a mat-list-item [routerLink]="'/menu-socios'">Administrativo</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/mantenedor-contacto'">Mensajes</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null || rolSecreDir != null" [routerLink]="'/gestor-solicitudes'">Solicitudes</a>
+            </mat-nav-list>
+        </mat-sidenav>
+        <mat-sidenav-content style="background-color: #eef4f7;">
+        <div class="contenedor">
+            <section class="features-boxed">
+                <div class="container">
+                    <!-- Breadcrumb -->
+                    <nav aria-label="breadcrumb" class="main-breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a [routerLink]="'/menu-principal'">Inicio</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Mantenedor-Datos</li>
+                        </ol>
+                    </nav>
+                    <!-- /Breadcrumb -->
+                    <div class="row justify-content-center features">
+                        <div class="col-sm-6 col-md-5 col-lg-4 item">
+                            <div class="box"><i class="fas fa-users icon"></i>
+                                <h3 class="name">Persona</h3>
+                                <!-- <p class="description">Agregar, Modificar, Eliminar Roles</p> -->
+                                <a class="learn-more" [routerLink]="'/persona'">Entrar »</a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-5 col-lg-4 item">
+                            <div class="box"><i class="fas fa-users icon"></i>
+                                <h3 class="name">Rol - Persona</h3>
+                                <!-- <p class="description">Asignar y Eliminar Rol de Personas</p> -->
+                                <a class="learn-more" [routerLink]="'/asignar-rol'">Entrar »</a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-5 col-lg-4 item">
+                            <div class="box"><i class="fas fa-cogs icon"></i>
+                                <h3 class="name">Rol</h3>
+                                <!-- <p class="description">Agregar, Modificar, Eliminar Roles</p> -->
+                                <a class="learn-more" [routerLink]="'/rol'">Entrar »</a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-5 col-lg-4 item">
+                            <div class="box"><i class="fas fa-cogs icon"></i>
+                                <h3 class="name">Mantenedor Noticias</h3>
+                                <!-- <p class="description">Asignar y Eliminar Rol de Personas</p> -->
+                                <a class="learn-more" [routerLink]="'/noticia'">Entrar »</a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-5 col-lg-4 item">
+                            <div class="box"><i class="fas fa-cogs icon"></i>
+                                <h3 class="name">Mantenedor Tienda</h3>
+                                <!-- <p class="description">Asignar y Eliminar Rol de Personas</p> -->
+                                <a class="learn-more" [routerLink]="'/menu-tienda'">Entrar »</a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-5 col-lg-4 item">
+                            <div class="box"><i class="fas fa-cogs icon"></i>
+                                <h3 class="name">Mantenedor Galeria</h3>
+                                <!-- <p class="description">Asignar y Eliminar Rol de Personas</p> -->
+                                <a class="learn-more" [routerLink]="'/galeria'">Entrar »</a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-5 col-lg-4 item">
+                            <div class="box"><i class="fas fa-cogs icon"></i>
+                                <h3 class="name">Mantenedor Fotos</h3>
+                                <!-- <p class="description">Asignar y Eliminar Rol de Personas</p> -->
+                                <a class="learn-more" [routerLink]="'/fotos'">Entrar »</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>

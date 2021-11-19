@@ -1,0 +1,156 @@
+<div style="margin-top: 100px;">
+    <mat-toolbar color="secondary">
+        <mat-toolbar-row>
+            <button mat-icon-button>
+                <mat-icon (click)="sidenav.toggle();">menu</mat-icon>
+            </button>
+            <h1 class="ms-auto" *ngFor="let persona of this.persona">{{persona.nombre}} {{persona.a_paterno}}</h1>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-sidenav-container>
+        <mat-sidenav #sidenav>
+            <mat-nav-list>
+                <a mat-list-item [routerLink]="'/menu-principal'">Inicio</a>
+                <a mat-list-item [routerLink]="'/perfil'">Mi Perfil</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/menu-rol'">Mantenedor de Datos</a>
+                <a mat-list-item [routerLink]="'/menu-deporte'">Deportivo</a>
+                <a mat-list-item [routerLink]="'/menu-socios'">Administrativo</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/mantenedor-contacto'">Mensajes</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null || rolSecreDir != null" [routerLink]="'/gestor-solicitudes'">Solicitudes</a>
+            </mat-nav-list>
+        </mat-sidenav>
+        <mat-sidenav-content>
+            <div style="height:88vh;">
+                <div class="contenedor">
+                    <section class="features-boxed">
+                        <div class="container">
+                            <!-- Breadcrumb -->
+                            <nav aria-label="breadcrumb" class="main-breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a [routerLink]="'/menu-principal'">Inicio</a></li>
+                                    <li class="breadcrumb-item"><a [routerLink]="'/menu-deporte'">Menu-Deporte</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Mi-Deporte</li>
+                                </ol>
+                            </nav>
+                            <!-- /Breadcrumb -->
+                            <div class="row justify-content-center features">
+                                <div *ngFor="let deporte of deporte" class="col-sm-12 col-sm-12 col-sm-12 item">
+                                    <div class="box">
+                                        <h1>{{deporte.deporte}}</h1>
+                                        <h3 class="name">{{deporte.nombre}}</h3>
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h2>Entrenamientos</h2>
+                                                        <textarea class="form-control form-control-sm" disabled>{{ deporte.entrenamientos }}</textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h2>Eventos Proximos</h2>
+                                                        <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalEventosProximos" (click)="listarEventosDeportivosPorIdCategoria()">Ver Eventos</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h2>Invitaciones</h2>
+                                                        <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalInvitacionesPendientes" (click)="listarActividadDeportistas()">Ver Invitaciones</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>
+
+<!--MODAL EVENTOS PROXIMOS-->
+<div class="modal fade" id="modalEventosProximos" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Proximos Eventos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="table" class="table-editable">
+                    <table class="table table-responsive-sm table-striped text-center">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Descripción</th>
+                                <th>Lugar</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let proximos of eventos">
+                                <td>    {{ proximos.descripcion  }}  </td>
+                                <td>    {{ proximos.lugar        }}  </td>
+                                <td>    {{ proximos.fecha        }}  </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--MODAL EVENTOS PROXIMOS-->
+
+<!--MODAL INVITACIONES PENDIENTES-->
+<div class="modal fade" id="modalInvitacionesPendientes" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Invitaciones Próximas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="table" class="table-editable">
+                    <table class="table table-responsive-sm table-striped text-center">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Evento</th>
+                                <th>Lugar</th>
+                                <th>Fecha</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let invitacion of actPendientes">
+                                <td>    {{ invitacion.descripcion   }}    </td>
+                                <td>    {{ invitacion.lugar         }}    </td>
+                                <td>    {{ invitacion.fecha         }}    </td>
+                                <!-- <td *ngIf="invitacion.asistio == 0">    Pendiente   </td> -->
+                                <td *ngIf="invitacion.asistio == 1">    Aceptado    </td>
+                                <td *ngIf="invitacion.asistio == 2">    Rechazado    </td>
+                                <td *ngIf="invitacion.asistio == 0">
+                                    <i class="far fa-check-circle fa-2x" style="cursor: pointer;" id="aceptar" (click)="aceptarEvento(invitacion)"></i>
+                                    <i class="far fa-times-circle fa-2x" style="cursor: pointer;" id="rechazar" (click)="rechazarEvento(invitacion)"></i>
+                                </td> 
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--MODAL INVITACIONES PENDIENTES-->

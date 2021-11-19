@@ -1,0 +1,49 @@
+<section id="cont">
+    <br>
+    <div class="container-fluid" id="contacto">
+        <h1>Contáctanos</h1>
+        <form [formGroup]="loginForm" class="row g-3" (submit)="Enviar()">
+            <div class="col-md-12">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" formControlName="nombre" id="nombre" name="nombre" required>
+                <div *ngIf="(submitted && loginForm.get('nombre')?.errors) || (loginForm.get('nombre')?.touched && loginForm.get('nombre')?.errors)">
+                    <span class="error" *ngIf="loginForm.get('nombre')?.hasError('required')">Nombre es requerido</span> 
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label for="correo" class="form-label">Correo</label>
+                <input type="email" class="form-control" formControlName="email" id="correo" name="correo" required>
+                <div *ngIf="(submitted && loginForm.get('email')?.errors) || (loginForm.get('email')?.touched && loginForm.get('email')?.errors)">
+                    <span class="error" *ngIf="loginForm.get('email')?.hasError('required')">Email es requerido</span> 
+                    <span class="error" *ngIf="loginForm.get('email')?.hasError('pattern')">Formato de email no válido</span> 
+                </div>
+            </div>
+            <div class="col-md-6">
+                    <label for="telefono" class="form-label">Teléfono</label>
+                    <input type="tel" class="form-control" formControlName="phone" id="telefono" name="telefono" required> 
+                    <div *ngIf="(submitted && loginForm.get('phone')?.errors) || (loginForm.get('phone')?.touched && loginForm.get('phone')?.errors)">
+                        <span class="error" *ngIf="loginForm.get('phone')?.hasError('required')">Teléfono es requerido</span>
+                        <span class="error" *ngIf="loginForm.get('phone')?.hasError('pattern')">Teléfono debe tener solo números y largo 9</span>
+                    </div>
+            </div>
+            <div class="col-md-12">
+                <label for="asunto" class="form-label">Asunto</label>
+                <input type="text" class="form-control" formControlName="asunto" id="asunto" name="asunto" required>
+                <div *ngIf="(submitted && loginForm.get('asunto')?.errors) || (loginForm.get('asunto')?.touched && loginForm.get('asunto')?.errors)">
+                    <span class="error" *ngIf="loginForm.get('asunto')?.errors">Asunto es requerido</span>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <label for="mensaje" class="form-label">Mensaje</label>
+                <textarea type="text" class="form-control" formControlName="mensaje" id="mensaje" name="mensaje" required></textarea>
+                <div *ngIf="(submitted && loginForm.get('mensaje')?.errors) || (loginForm.get('mensaje')?.touched && loginForm.get('mensaje')?.errors)">
+                    <span class="error" *ngIf="loginForm.get('mensaje')?.errors">Mensaje es requerido</span> 
+                </div>
+            </div>
+            <div class="col-md-12" id="boton">
+                <button class="btn btn-success" type="submit">Enviar</button>
+            </div>
+        </form>
+    </div>
+    <br>
+</section>

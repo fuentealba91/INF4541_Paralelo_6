@@ -1,0 +1,35 @@
+/* body{
+    margin-top: 20px;
+    color: #1a202c;
+    text-align: left;
+    background-color: #e2e8f0;    
+}
+.main-body {
+    padding: 15px;
+} */
+.container {
+    height:100%;
+    width:100%;
+    overflow:hidden;
+    position:absolute;
+}
+.contentCont {
+    display: block;
+    /* position:absolute; */
+    height:fit-content;
+    bottom:0;
+    top:0;
+    left:0;
+    right:0;
+    margin-top:100px;
+    margin-bottom:0;
+    margin-right:0;
+    margin-left:0;
+    /* background-color: green; */
+}
+.content {
+    background:#efefef;
+    width:100%;
+    height:100%;
+    overflow-x:hidden;
+}

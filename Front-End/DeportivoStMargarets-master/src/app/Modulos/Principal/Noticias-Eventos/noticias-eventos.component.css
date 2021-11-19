@@ -1,0 +1,41 @@
+/* .card
+{
+    width: 18rem;
+    margin-left: auto;
+    margin-right: auto;
+} */
+
+.card-img-top
+{
+    height: 200px;
+    width: 200px;
+}
+
+#NotyEv, section
+{
+    background-color: rgb(190, 189, 187);
+}
+
+@media only screen and (max-width:700px){
+
+    .section h1{
+        margin-bottom: 700px;
+    }
+
+    .row {
+        flex-direction: column-reverse;
+        margin: 50px 0;
+    }
+    
+    /* .card{
+        width: 17rem;
+        margin-left: auto;
+        margin-right: auto;
+    } */
+
+    .card-img-top {
+        align-self: center;
+        height: 90px;
+        width: 90px;
+    }
+}

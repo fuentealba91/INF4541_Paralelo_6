@@ -1,0 +1,120 @@
+<div class="container-fluid">
+    <br>
+    <h1>Formulario de Registro</h1>
+    <br>
+    <form [formGroup]="loginForm" class="row g-3" (submit)="agregarPersona()">
+        <div class="col-md-12">
+            <label for="rut" class="form-label">Rut</label>
+            <input type="tel" class="form-control form-control-sm" formControlName="rut" id="rut" (change)="formatRut()">
+            <div *ngIf="(submitted && loginForm.get('rut')?.errors) || (loginForm.get('rut')?.touched && loginForm.get('rut')?.errors)">
+                <span class="error" *ngIf="loginForm.get('rut')?.hasError('required')">Rut es requerido</span> 
+                <span class="error" *ngIf="this.rutValidated == false">Rut no válido</span>
+            </div>
+            <div *ngIf="this.rutValidated == false">
+                <span class="error" *ngIf="this.rutValidated == false">Rut no válido</span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="tel" class="form-control form-control-sm" formControlName="nombre" id="nombre">
+            <div *ngIf="(submitted && loginForm.get('nombre')?.errors) || (loginForm.get('nombre')?.touched && loginForm.get('nombre')?.errors)">
+                <span class="error" *ngIf="loginForm.get('nombre')?.hasError('required')">El nombre es requerido</span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="segundo" class="form-label">Segundo Nombre (Alternativo)</label>
+            <input type="tel" class="form-control form-control-sm" formControlName="segundo" id="segundo">
+        </div>
+        <div class="col-md-12">
+            <label for="paterno" class="form-label">Apellido Paterno</label>
+            <input type="text" class="form-control form-control-sm" formControlName="paterno" id="paterno">
+            <div *ngIf="(submitted && loginForm.get('paterno')?.errors) || (loginForm.get('paterno')?.touched && loginForm.get('paterno')?.errors)">
+                <span class="error" *ngIf="loginForm.get('paterno')?.hasError('required')">El apellido paterno es requerido</span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="materno" class="form-label">Apellido Materno</label>
+            <input type="text" class="form-control form-control-sm" formControlName="materno" id="materno">
+            <div *ngIf="(submitted && loginForm.get('materno')?.errors) || (loginForm.get('materno')?.touched && loginForm.get('materno')?.errors)">
+                <span class="error" *ngIf="loginForm.get('materno')?.hasError('required')">El apellido materno es requerido</span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="correo" class="form-label">Correo</label>
+            <input type="email" class="form-control form-control-sm" formControlName="correo" id="correo">
+            <div *ngIf="(submitted && loginForm.get('correo')?.errors) || (loginForm.get('correo')?.touched && loginForm.get('correo')?.errors)">
+                <span class="error" *ngIf="loginForm.get('correo')?.hasError('required')">El correo es requerido</span>
+                <span class="error" *ngIf="loginForm.get('correo')?.hasError('email')">El formato de correo no es válido</span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="telefono" class="form-label">Teléfono</label>
+            <input type="text" class="form-control form-control-sm" formControlName="telefono" id="telefono">
+            <div *ngIf="(submitted && loginForm.get('telefono')?.errors) || (loginForm.get('telefono')?.touched && loginForm.get('telefono')?.errors)">
+                <span class="error" *ngIf="loginForm.get('telefono')?.hasError('required')">El teléfono es requerido</span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="nacimiento" class="form-label">Fecha de Nacimiento</label>
+            <input type="date" class="form-control form-control-sm" formControlName="nacimiento" id="nacimiento">
+            <div *ngIf="(submitted && loginForm.get('nacimiento')?.errors) || (loginForm.get('nacimiento')?.touched && loginForm.get('nacimiento')?.errors)">
+                <span class="error" *ngIf="loginForm.get('nacimiento')?.hasError('required')">La fecha de nacimiento es requerida</span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="comuna" class="form-label">Comuna</label>
+            <input type="text" class="form-control form-control-sm" formControlName="comuna" id="comuna">
+            <div *ngIf="(submitted && loginForm.get('comuna')?.errors) || (loginForm.get('comuna')?.touched && loginForm.get('comuna')?.errors)">
+                <span class="error" *ngIf="loginForm.get('comuna')?.hasError('required')">La comuna es requerida</span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="direccion" class="form-label">Direccion</label>
+            <input type="text" class="form-control form-control-sm" formControlName="direccion" id="direccion">
+            <div *ngIf="(submitted && loginForm.get('direccion')?.errors) || (loginForm.get('direccion')?.touched && loginForm.get('direccion')?.errors)">
+                <span class="error" *ngIf="loginForm.get('direccion')?.hasError('required')">La dirección es requerida</span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="genero" class="form-label form-select-sm">Genero</label>
+            <select class="form-select" formControlName="sexo">
+                <option value="" selected>Escoger</option>
+                <option value="M">Masculino</option>
+                <option value="F">Femenino</option>
+                <option value="ND">No definido</option>
+            </select>
+            <div *ngIf="(submitted && loginForm.get('sexo')?.errors) || (loginForm.get('sexo')?.touched && loginForm.get('sexo')?.errors)">
+                <span class="error" *ngIf="loginForm.get('sexo')?.hasError('required')">El genero es requerido</span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="clave" class="form-label">Contraseña</label>
+            <input type="password" class="form-control form-control-sm" formControlName="password" id="clave" name="clave">
+            <div *ngIf="(submitted && loginForm.get('password')?.errors) || (loginForm.get('password')?.touched && loginForm.get('password')?.errors)">
+                <span class="error" *ngIf="loginForm.get('password')?.hasError('required')">Contraseña es requerida</span>
+                <span class="error" *ngIf="loginForm.get('password')?.hasError('pattern')">Contraseña debe contener 1 mayúscula, 1 minúscula, 1 número, 1 cáracter especial y al menos 6 caracteres</span>
+                <span class="error" *ngIf="compararClaves() == false">Las contraseñas deben ser iguales</span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="confirme" class="form-label">Confirme Contraseña</label>
+            <input type="password" class="form-control form-control-sm" formControlName="confirm_password" id="confirme" name="confirme">
+            <div *ngIf="(submitted && loginForm.get('confirm_password')?.errors) || (loginForm.get('confirm_password')?.touched && loginForm.get('confirm_password')?.errors)">
+                <span class="error" *ngIf="loginForm.get('confirm_password')?.hasError('required')">Contraseña es requerida</span>
+                <span class="error" *ngIf="loginForm.get('confirm_password')?.hasError('pattern')">Contraseña debe contener 1 mayúscula, 1 minúscula, 1 número, 1 cáracter especial y al menos 6 caracteres</span>
+                <span class="error" *ngIf="compararClaves() == false">Las contraseñas deben ser iguales</span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="pregunta" class="form-label">Ciudad de nacimiento (La respuesta será necesaria para cambio de contraseña)</label>
+            <input type="text" class="form-control form-control-sm" formControlName="preguntaSecreta" id="pregunta" name="preguntaSecreta">
+            <div *ngIf="(submitted && loginForm.get('preguntaSecreta')?.errors) || (loginForm.get('preguntaSecreta')?.touched && loginForm.get('preguntaSecreta')?.errors)">
+                <span class="error" *ngIf="loginForm.get('preguntaSecreta')?.hasError('required')">La respuesta es requerida</span>
+            </div>
+        </div>
+        <div class="col-md-12" id="boton">
+            <button class="btn btn-success" type="submit">Registrarse</button>
+        </div>
+        <div class="col-md-12"></div>
+    </form>
+</div>

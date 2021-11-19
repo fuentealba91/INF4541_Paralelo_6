@@ -1,0 +1,7 @@
+.container 
+{
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    /* lo de abajo en container es para el scroll con snap
+    scroll-snap-type: y mandatory; */
+}

@@ -1,0 +1,294 @@
+<!--MOSTRAR REUNIONES-->
+<div style="margin-top: 100px; min-height: 400px;">
+    <mat-toolbar color="secondary">
+        <mat-toolbar-row>
+            <button mat-icon-button>
+                <mat-icon (click)="sidenav.toggle();">menu</mat-icon>
+            </button>
+            <h1 class="ms-auto" *ngFor="let persona of this.persona">{{persona.nombre}} {{persona.a_paterno}}</h1>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-sidenav-container>
+        <mat-sidenav #sidenav>
+            <mat-nav-list>
+                <a mat-list-item [routerLink]="'/menu-principal'">Inicio</a>
+                <a mat-list-item [routerLink]="'/perfil'">Mi Perfil</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/menu-rol'">Mantenedor de Datos</a>
+                <a mat-list-item [routerLink]="'/menu-deporte'">Deportivo</a>
+                <a mat-list-item [routerLink]="'/menu-socios'">Administrativo</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/mantenedor-contacto'">Mensajes</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null || rolSecreDir != null" [routerLink]="'/gestor-solicitudes'">Solicitudes</a>
+            </mat-nav-list>
+        </mat-sidenav>
+        <mat-sidenav-content>
+            <div class="container-fluid">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="main-breadcrumb">
+                    <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="'/menu-principal'">Inicio</a></li>
+                    <li class="breadcrumb-item"><a [routerLink]="'/menu-socios'">Menu-Administrativo</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Reuniones</li>
+                    </ol>
+                </nav>
+                <!-- /Breadcrumb -->
+                <h1>
+                    Administrador de Reuniones
+                </h1>
+                <div id="table" class="table-editable">
+                    <table class="table table-responsive-sm table-striped text-center">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Lugar</th>
+                                <th>Fecha</th>
+                                <th>Tipo</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngIf="cargo == true">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><button class="btn btn-success" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalAgregarReunion">Agregar</button></td>
+                            </tr>
+                            <tr *ngFor="let reunion of reuniones">
+                                <td>{{reunion.lugar}}</td>
+                                <td>{{reunion.fecha}}</td>
+                                <td>{{reunion.descripcion}}</td>
+                                <td> 
+                                    <i *ngIf="(cargoSecretario == true)" class="fas fa-address-book fa-2x" id="asistentes" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalTomaDeAsistencia" (click)="listarInvitadosConfirmados(reunion.idReunion); porcentajeInvitadosAsistentes(reunion.idReunion)"></i>
+                                    <i *ngIf="((reunion.acuerdos == '' || reunion.acuerdos == null)&&(cargo == true))" class="fas fa-edit fa-2x" id="editar" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalAgregarAcuerdos" (click)="detalleReunionId(reunion.idReunion)"></i>
+                                    <i class="far fa-file fa-2x" id="detalle" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalDetalleReunion" (click)="detalleReunionId(reunion.idReunion); listarInvitadosConfirmados(reunion.idReunion); porcentajeInvitadosAsistentes(reunion.idReunion)"></i>
+                                    <i *ngIf="((reunion.acuerdos == '' || reunion.acuerdos == null)&&(cargo == true))" class="fas fa-trash fa-2x" id="eliminar" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalEliminarReunion" (click)="detalleReunionId(reunion.idReunion)"></i>
+                                </td> 
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>
+<!--MOSTRAR REUNIONES-->
+
+<!--AGREGAR REUNION-->
+<div class="modal fade" id="modalAgregarReunion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Reunión</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="loginForm" class="row g-2 needs-validation" (submit)= "agendarReunion()">
+                    <div class="col-sm-12">
+                        <label for="fecha" class="form-label">Fecha</label>
+                        <input type="datetime-local" class="form-control form-control-sm" id="fecha" formControlName="fecha" required>
+                        <div *ngIf="(submitted && loginForm.get('fecha')?.errors) || (loginForm.get('fecha')?.touched && loginForm.get('fecha')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('fecha')?.hasError('required')">Fecha es requerida</span>
+                        </div>
+                        <div *ngIf="flag == true">
+                            <span class="error" *ngIf="flag == true">Fecha debe ser mayor a 15 días de la actual</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label for="lugar" class="form-label">Lugar</label>
+                        <input type="text" class="form-control form-control-sm" id="lugar" formControlName="lugar" required>
+                        <div *ngIf="(submitted && loginForm.get('lugar')?.errors) || (loginForm.get('lugar')?.touched && loginForm.get('lugar')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('lugar')?.hasError('required')">Lugar es requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label for="puntos">Puntos a tratar</label>
+                        <textarea type="text" class="form-control" id="puntos" formControlName="puntos" autocomplete="off" rows=4 required></textarea>
+                        <div *ngIf="(submitted && loginForm.get('puntos')?.errors) || (loginForm.get('puntos')?.touched && loginForm.get('puntos')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('puntos')?.hasError('required')">Puntos son requeridos</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label for="encargado">Encargado</label>
+                        <select class="form-select" formControlName="encargado" id="encargado" required>
+                            <option value=''>Escoger</option>
+                            <option *ngFor="let encargado of directivas" value="{{encargado.id_Persona}}">{{encargado.nombre}} {{encargado.a_paterno}}</option>
+                        </select>
+                        <div *ngIf="(submitted && loginForm.get('encargado')?.errors) || (loginForm.get('encargado')?.touched && loginForm.get('encargado')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('encargado')?.hasError('required')">Encargado es requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label for="tipo">Tipo de reunion</label>
+                        <select class="form-select" formControlName="tipo" required>
+                            <option value=''>Escoger</option>
+                            <option *ngFor="let tipo of tipos" value="{{tipo.idTipo}}">{{tipo.descripcion}}</option>
+                        </select>
+                        <div *ngIf="(submitted && loginForm.get('tipo')?.errors) || (loginForm.get('tipo')?.touched && loginForm.get('tipo')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('tipo')?.hasError('required')">Tipo de reunión es requerido</span>
+                        </div>
+                    </div>                     
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Agregar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--AGREGAR REUNION-->
+
+<!--MODAL ELIMINAR REUNION-->
+<div class="modal fade" id="modalEliminarReunion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Eliminar Reunión</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5 *ngFor="let reunion of det">¿Está seguro de eliminar la {{reunion.descripcion}} del día {{reunion.fecha}}?</h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="btnEliminar" *ngFor="let reunion of det" (click)="eliminarReunion(reunion.idReunion)">Eliminar</button>
+          <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+</div>
+<!--MODAL ELIMINAR REUNION-->
+
+<!--MOSTRAR REUNIÓN-->
+<div class="modal fade" id="modalDetalleReunion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reunión</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    Total de Socios Confirmados: {{total}}
+                    <br/>
+                    Porcentaje de Socios Asistentes: {{(asistentes*100)/total}}%
+                    <br/>
+                    <br/>
+                </div>
+                <form *ngFor="let reunion of det">
+                    <label for="Tipo">Tipo de Reunión</label>
+                    <input type="text" class="form-control" id="tipo" name="tipo" value={{reunion.descripcion}} autocomplete="off" disabled>
+                    <label for="fecha">Fecha</label>
+                    <input type="text" class="form-control" id="fecha" name="fecha" value={{reunion.fecha}} disabled>
+                    <label for="lugar">Lugar</label>
+                    <input type="text" class="form-control" id="lugar" name="lugar" value={{reunion.lugar}} autocomplete="off" disabled>
+                    <label for="encargado">Encargado</label>
+                    <input type="text" class="form-control" id="encargado" name="encargado" value="{{reunion.nombre}} {{reunion.a_paterno}} {{reunion.a_materno}}" autocomplete="off" disabled>
+                    <label for="puntos">Puntos a Tratar</label>
+                    <textarea type="text" class="form-control" id="result" *ngFor="let reunion of det" autocomplete="off" disabled>{{reunion.puntosTratar}}</textarea>
+                    <label for="acuerdos">Acuerdos</label>
+                    <textarea type="text" class="form-control" id="result" *ngFor="let reunion of det" autocomplete="off" disabled>{{reunion.acuerdos}}</textarea>
+                    <a href="http://localhost:80/PHP_BDD/Archivos/DocumentosAsambleas/{{reunion.archivo}}" target="_blank">{{reunion.archivo}}</a>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--MOSTRAR REUNIÓN-->
+
+<!--MODAL AGREGAR ACUERDOS-->
+<div class="modal fade" id="modalAgregarAcuerdos" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modificar Reunión</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="resultadoForm" class="row g-2 needs-validation" (submit)= "agregarAcuerdos()">
+                    <div class="col-sm-6">
+                        <label for="reunion" class="form-label">Reunión</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="reunion" readonly required>
+                        <div *ngIf="(submitted && resultadoForm.get('reunion')?.errors) || (resultadoForm.get('reunion')?.touched && resultadoForm.get('reunion')?.errors)">
+                            <span class="error" *ngIf="resultadoForm.get('reunion')?.hasError('required')">Reunión es requerida</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="fecha" class="form-label">Fecha</label>
+                        <input type="datetime-local" class="form-control form-control-sm" formControlName="fecha" required>
+                        <div *ngIf="(submitted && resultadoForm.get('fecha')?.errors) || (resultadoForm.get('fecha')?.touched && resultadoForm.get('fecha')?.errors)">
+                            <span class="error" *ngIf="resultadoForm.get('fecha')?.hasError('required')">Fecha es requerida</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label for="puntos" class="form-label">Puntos a Tratar</label>
+                        <textarea class="form-control form-control-sm" id="resultado" formControlName="puntos" required></textarea>
+                        <div *ngIf="(submitted && resultadoForm.get('puntos')?.errors) || (resultadoForm.get('puntos')?.touched && resultadoForm.get('puntos')?.errors)">
+                            <span class="error" *ngIf="resultadoForm.get('puntos')?.hasError('required')">Puntos son requeridos</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label for="acuerdo" class="form-label">Acuerdos</label>
+                        <textarea class="form-control form-control-sm" id="resultado" formControlName="acuerdo"></textarea>
+                        <div *ngIf="(submitted && resultadoForm.get('acuerdo')?.errors) || (resultadoForm.get('acuerdo')?.touched && resultadoForm.get('acuerdo')?.errors)">
+                            <span class="error" *ngIf="resultadoForm.get('acuerdo')?.hasError('required')">Acuerdo requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label for="archivo" class="form-label">Documento</label>
+                        <input type="file" class="form-control form-control-sm" accept=".pdf, .doc, .docx" formControlName="archivo" id="archivo" (change)="seleccionarArchivo($event)">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Agregar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--MODAL AGREGAR ACUERDOS-->
+
+<!-- ASISTENCIA SOCIOS -->
+<div class="modal fade" id="modalTomaDeAsistencia" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Toma de Asistencia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="confirmados = []"></button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    Total de Socios Confirmados: {{total}}
+                    <br/>
+                    Porcentaje de Socios Asistentes: {{(asistentes*100)/total}}%
+                    <br/>
+                </div>
+                <div id="table" class="table-editable">
+                    <table class="table table-responsive-sm table-striped text-center">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let confirmado of confirmados">
+                                <td>{{confirmado.nombre}} {{confirmado.a_paterno}} {{confirmado.a_materno}}</td>
+                                <td *ngIf="confirmado.asistio == 1">Confirmado</td>
+                                <td *ngIf="confirmado.asistio == 3">Asistido</td>
+                                <td *ngIf="confirmado.asistio == 4">Ausente</td>
+                                <td>
+                                    <i class="far fa-check-circle fa-2x" style="cursor: pointer;" id="asiste" (click)="confirmarAsistencia(confirmado)"></i>
+                                    <i class="far fa-times-circle fa-2x" style="cursor: pointer;" id="ausente" (click)="rechazarAsistencia(confirmado)"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ASISTENCIA SOCIOS -->

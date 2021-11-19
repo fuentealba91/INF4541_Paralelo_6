@@ -1,0 +1,103 @@
+<div style="margin-top: 100px;">
+    <mat-toolbar color="secondary">
+        <mat-toolbar-row>
+            <button mat-icon-button>
+                <mat-icon (click)="sidenav.toggle();">menu</mat-icon>
+            </button>
+            <h1 class="ms-auto" *ngFor="let persona of this.persona">{{persona.nombre}} {{persona.a_paterno}}</h1>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-sidenav-container>
+        <mat-sidenav #sidenav>
+            <mat-nav-list>
+                <a mat-list-item [routerLink]="'/menu-principal'">Inicio</a>
+                <a mat-list-item [routerLink]="'/perfil'">Mi Perfil</a>
+                <a mat-list-item *ngIf="rolAdministrador != null || rolSecretario != null" [routerLink]="'/menu-rol'">Mantenedor de Datos</a>
+                <a mat-list-item [routerLink]="'/menu-deporte'">Deportivo</a>
+                <a mat-list-item [routerLink]="'/menu-socios'">Administrativo</a>
+                <a mat-list-item *ngIf="rolAdministrador != null || rolSecretario != null" [routerLink]="'/mantenedor-contacto'">Mensajes</a>
+                <a mat-list-item *ngIf="rolAdministrador != null || rolSecretario != null || rolSecreDir != null" [routerLink]="'/gestor-solicitudes'">Solicitudes</a>
+            </mat-nav-list>
+        </mat-sidenav>
+            <mat-sidenav-content>
+            <div class="container-fluid">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="main-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a [routerLink]="'/menu-principal'">Inicio</a></li>
+                        <li class="breadcrumb-item"><a [routerLink]="'/menu-socios'">Menu-Administrativo</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Administrador-Socios</li>
+                    </ol>
+                </nav>
+                <!-- /Breadcrumb -->
+                <h1>
+                    Administrador de Socios
+                </h1>
+                <div id="table" class="table-editable">
+                    <table class="table table-responsive-sm table-striped text-center">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Tipo</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <select class="form-select form-select-sm" [(ngModel)]="filtro.tipo">
+                                        <option value='' selected>Escoger</option>
+                                        <option value=2>Socio Interno</option>
+                                        <option value=3>Socio Externo</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-select form-select-sm" [(ngModel)]="filtro.estado">
+                                        <option value='' selected>Escoger</option>
+                                        <option value=1>Activo</option>
+                                        <option value=2>Inactivo</option>
+                                    </select>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr *ngFor="let socio of socios | tipoRol: filtro.tipo | filtradoEstado : filtro.estado">
+                                <td>{{socio.nombre}} {{socio.a_paterno}}</td>
+                                <td *ngIf="socio.id_rol == 2">Socio Interno</td>
+                                <td *ngIf="socio.id_rol == 3">Socio Externo</td>
+                                <td *ngIf="socio.estado == 1">Activo</td>
+                                <td *ngIf="socio.estado == 2">Inactivo</td>
+                                <td>                                    
+                                    <i class="fas fa-toggle-on fa-2x" *ngIf="socio.estado==1" id="eliminar" (click)="desactivarSocio(socio)"></i>
+                                    <i class="fas fa-toggle-off fa-2x" *ngIf="socio.estado==2" id="eliminar2" (click)="activarSocio(socio)"></i>
+                                    <i class="fas fa-trash fa-2x" id="borrar" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalEliminarRolAsignado" (click)="detalleRolAsignadoId(socio.id_persona, socio.id_rol)"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>
+
+<!--MODAL ELIMINAR ROL ASIGNADO-->
+<div class="modal fade" id="modalEliminarRolAsignado" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Eliminar Asociación</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5 *ngFor="let rol of det">¿Está seguro de eliminar al {{rol.descripcion}} {{rol.nombre}} {{rol.a_paterno}}?</h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="btnEliminar" *ngFor="let rol of det" (click)="eliminarRolAsignado(rol.id_persona,rol.id_rol)">Eliminar</button>
+          <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+</div>
+<!--MODAL ELIMINAR ROL ASIGNADO-->

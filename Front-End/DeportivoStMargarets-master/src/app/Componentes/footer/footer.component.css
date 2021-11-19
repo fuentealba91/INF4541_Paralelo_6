@@ -1,0 +1,53 @@
+.pie
+{
+    background-color: rgb(190, 189, 187);
+}
+
+section
+{
+    background-color: rgb(190, 189, 187);
+    height: 220px;
+}
+
+img
+{
+    width: 185px;
+    height: 100px;
+}
+
+i
+{
+    margin-top: auto;
+    margin-bottom: auto;
+    margin: 10px;
+}
+
+#redes
+{
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+#datos
+{
+    margin-left: 10px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+#datos > p
+{
+    margin: 0;
+}
+
+#logofooter
+{
+    margin-left: -20px;
+    text-align: right;
+}
+
+@media only screen and (max-width:700px){
+    .contenedor {
+        margin-top: 30px;
+    }
+}

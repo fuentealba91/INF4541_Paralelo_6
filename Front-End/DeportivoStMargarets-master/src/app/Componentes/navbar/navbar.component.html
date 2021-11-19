@@ -1,0 +1,49 @@
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="barraNav">
+    <div class="container-fluid">
+        <a class="navbar-brand" id="logoIzq" [routerLink]="'/inicio'">
+            <img src="../../../assets/logo-no-borde.png" alt="">
+        </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" [routerLink]="'/inicio'">Inicio</a>
+          </li>
+          <!-- <li class="nav-item">
+            <a class="nav-link" href="#">Club</a>
+          </li> -->
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/noticias'">Noticias</a>
+          </li>
+          <!-- <li class="nav-item">
+            <a class="nav-link" (click)="onClickScroll('ramasDepor')">Deportes</a>
+          </li> -->
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/galerias'">Multimedia</a>
+          </li>
+          <!-- <li class="nav-item">
+            <a class="nav-link" (click)="onClickScroll('directiva')">Socios</a>
+          </li> -->
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/tienda'">Catalogo</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" (click)="onClickScroll('cont')">Contacto</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <button class="btn btn-success" *ngIf="loginbtn" [routerLink]="'/login'">Iniciar Sesión</button>
+          </li>
+          <li class="nav-item" *ngIf="logoutbtn">
+            <a class="nav-link" [routerLink]="['/menu-principal']">Mi Cuenta</a>
+          </li>
+          <li class="nav-item">
+            <button class="btn btn-success" *ngIf="logoutbtn" (click)="logout()" [routerLink]="'/inicio'">Salir</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>

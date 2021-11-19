@@ -1,0 +1,267 @@
+<!--AGREGAR Y MOSTRAR DEPORTE-->
+<div style="margin-top: 100px;">
+    <mat-toolbar color="secondary">
+        <mat-toolbar-row>
+            <button mat-icon-button>
+                <mat-icon (click)="sidenav.toggle();">menu</mat-icon>
+            </button>
+            <h1 class="ms-auto" *ngFor="let persona of this.persona">{{persona.nombre}} {{persona.a_paterno}}</h1>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-sidenav-container>
+        <mat-sidenav #sidenav>
+            <mat-nav-list>
+                <a mat-list-item [routerLink]="'/menu-principal'">Inicio</a>
+                <a mat-list-item [routerLink]="'/perfil'">Mi Perfil</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/menu-rol'">Mantenedor de Datos</a>
+                <a mat-list-item [routerLink]="'/menu-deporte'">Deportivo</a>
+                <a mat-list-item [routerLink]="'/menu-socios'">Administrativo</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/mantenedor-contacto'">Mensajes</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null || rolSecreDir != null" [routerLink]="'/gestor-solicitudes'">Solicitudes</a>
+            </mat-nav-list>
+        </mat-sidenav>
+            <mat-sidenav-content>
+            <div class="container-fluid">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="main-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a [routerLink]="'/menu-principal'">Inicio</a></li>
+                        <li class="breadcrumb-item"><a [routerLink]="'/menu-deporte'">Menu-Deporte</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Administrador-Categoria</li>
+                    </ol>
+                </nav>
+                <!-- /Breadcrumb -->
+                <h1>
+                    Administrador de Categorias
+                </h1>
+                <div id="table" class="table-editable">
+                    <table class="table table-responsive-sm table-striped text-center">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th></th>
+                                <th>Nombre</th>
+                                <th>Género</th>
+                                <th>Edad</th>
+                                <th>Cupo</th>
+                                <th>Deporte</th>
+                                <th>Entrenamientos</th>
+                                <th>Valores</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><button class="btn btn-success" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalAgregarCategoria">Agregar</button></td>
+                            </tr>
+                            <tr *ngFor="let categoria of categorias">
+                                <td></td>
+                                <td> {{ categoria.nombre }} </td>
+                                <td> {{ categoria.genero }} </td>
+                                <td> {{ categoria.edad }} </td>
+                                <td> {{ categoria.cupo }} </td>
+                                <td> {{ categoria.deporte }} </td>
+                                <td>
+                                    <textarea class="form-control form-control-sm" disabled>{{ categoria.entrenamientos }}</textarea>
+                                </td>
+                                <td>
+                                    <textarea class="form-control form-control-sm" disabled>{{ categoria.valores }}</textarea>
+                                </td>
+                                <td *ngIf="categoria.estado==1">Activo</td>
+                                <td *ngIf="categoria.estado==0">Inactivo</td>
+                                <td>
+                                    <i class="fas fa-edit fa-2x" id="editar" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalModificarCategoria" (click)="detalleCategoriaId(categoria.idCategoria)"></i>
+                                    <i class="fas fa-toggle-on fa-2x" *ngIf="categoria.estado==1" id="eliminar" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalEliminarCategoria" (click)="detalleCategoriaId(categoria.idCategoria)"></i>
+                                    <i class="fas fa-toggle-off fa-2x" *ngIf="categoria.estado==0" id="eliminar2" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalEliminarCategoria2" (click)="detalleCategoriaId(categoria.idCategoria)"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>
+<!--AGREGAR Y MOSTRAR DEPORTE-->
+
+<!--MODAL MODIFICAR CATEGORIA-->
+<div class="modal fade" id="modalModificarCategoria" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modificar Categoría</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="modificarForm" class="row g-3" (submit)="modificarCategoria()">
+                    <div class="col-md-12">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="nombre" id="desc" autocomplete="off">
+                        <div *ngIf="(submitted && modificarForm.get('nombre')?.errors) || (modificarForm.get('nombre')?.touched && modificarForm.get('nombre')?.errors)">
+                            <span class="error" *ngIf="modificarForm.get('nombre')?.hasError('required')">El nombre es requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="genero">Género</label>
+                        <select class="form-select" formControlName="genero" id="genero" autocomplete="off">
+                            <option value="">Escoger</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
+                            <option value="ND">No definido</option>
+                        </select>
+                        <div *ngIf="(submitted && modificarForm.get('genero')?.errors) || (modificarForm.get('genero')?.touched && modificarForm.get('genero')?.errors)">
+                            <span class="error" *ngIf="modificarForm.get('genero')?.hasError('required')">El genero es requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="entrenamiento">Entrenamientos</label>
+                        <textarea class="form-control form-control-sm" formControlName="entrenamiento" id="entrenamiento"></textarea>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="valores">Valores</label>
+                        <textarea class="form-control form-control-sm" formControlName="valores" id="valores"></textarea>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="edad" class="form-label">Edad</label>
+                        <input type="number" class="form-control form-control-sm" min="0" formControlName="edad" id="edad" oninput="validity.valid||(value='');" required>
+                        <div *ngIf="(submitted && modificarForm.get('edad')?.errors) || (modificarForm.get('edad')?.touched && modificarForm.get('edad')?.errors)">
+                        <span class="error" *ngIf="modificarForm.get('edad')?.hasError('required')">La edad es requerida</span>
+                    </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="cupo" class="form-label">Cupo</label>
+                        <input type="number" class="form-control form-control-sm" min="1" formControlName="cupo" id="cupo" oninput="validity.valid||(value='1');" required>
+                        <div *ngIf="(submitted && modificarForm.get('cupo')?.errors) || (modificarForm.get('cupo')?.touched && modificarForm.get('cupo')?.errors)">
+                            <span class="error" *ngIf="modificarForm.get('cupo')?.hasError('required')">El cupo es requerido</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Modificar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--MODAL MODIFICAR CATEGORIA-->
+
+<!--MODAL DESACTIVAR CATEGORIA-->
+<div class="modal fade" id="modalEliminarCategoria" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Eliminar Categoría</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5 *ngFor="let categoria of cat">¿Está seguro de desactivar a {{categoria.nombre}}?</h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="btnEliminar" *ngFor="let categoria of cat" (click)="eliminarCategoria(categoria.idCategoria)">Desactivar</button>
+          <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+</div>
+<!--MODAL DESACTIVAR CATEGORIA-->
+
+<!--MODAL ACTIVAR CATEGORIA-->
+<div class="modal fade" id="modalEliminarCategoria2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Reincorporar Categoría</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5 *ngFor="let categoria of cat">¿Está seguro de reincorporar a {{categoria.nombre}}?</h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="btnEliminar" *ngFor="let categoria of cat" (click)="eliminarCategoria2(categoria.idCategoria)">Reincorporar</button>
+          <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+</div>
+<!--MODAL ACTIVAR CATEGORIA-->
+
+<!--AGREGAR CATEGORIA-->
+<div class="modal fade" id="modalAgregarCategoria" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Categoria</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="loginForm" class="row g-3 needs-validation" (submit)= "agregarCategoria()">
+                    <div class="col-md-12">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control form-control-sm" id="nombre" formControlName="nombre" required>
+                        <div *ngIf="(submitted && loginForm.get('nombre')?.errors) || (loginForm.get('nombre')?.touched && loginForm.get('nombre')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('nombre')?.hasError('required')">Nombre es requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="genero" class="form-label form-select-sm">Genero</label>
+                        <select class="form-select" name="sexo" formControlName="genero" required>
+                            <option value="" selected>Escoger</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
+                            <option value="ND">No definido</option>
+                        </select>
+                        <div *ngIf="(submitted && loginForm.get('genero')?.errors) || (loginForm.get('genero')?.touched && loginForm.get('genero')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('genero')?.hasError('required')">Género es requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="entrenamiento" class="form-label">Entrenamientos</label>
+                        <textarea class="form-control form-control-sm" id="entrenamiento" formControlName="entrenamiento"></textarea>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="valores">Valores</label>
+                        <textarea class="form-control form-control-sm" formControlName="valores" id="valores"></textarea>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="edad" class="form-label">Edad</label>
+                        <input type="number" class="form-control form-control-sm" min="0" id="edad" formControlName="edad" oninput="validity.valid||(value='');" required>
+                        <div *ngIf="(submitted && loginForm.get('edad')?.errors) || (loginForm.get('edad')?.touched && loginForm.get('edad')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('edad')?.hasError('required')">Edad es requerida</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="cupo" class="form-label">Cupo</label>
+                        <input type="number" class="form-control form-control-sm" min="1" id="cupo" formControlName="cupo" oninput="validity.valid||(value='1');" required>
+                        <div *ngIf="(submitted && loginForm.get('cupo')?.errors) || (loginForm.get('cupo')?.touched && loginForm.get('cupo')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('cupo')?.hasError('required')">Cupo es requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="deporte" class="form-label">Deporte</label>
+                        <select class="form-select" name="deporte" formControlName="deporte" required>
+                            <option *ngFor="let deporte of deportes" value="{{deporte.idDeporte}}">{{deporte.nombre}}</option>
+                        </select>
+                        <div *ngIf="(submitted && loginForm.get('deporte')?.errors) || (loginForm.get('deporte')?.touched && loginForm.get('deporte')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('deporte')?.hasError('required')">Deporte es requerido</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Agregar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--AGREGAR CATEGORIA-->

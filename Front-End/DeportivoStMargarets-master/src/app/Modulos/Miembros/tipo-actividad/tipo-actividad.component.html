@@ -1,0 +1,97 @@
+<!--AGREGAR Y MOSTRAR TIPO DE EVENTO-->
+<div style="margin-top: 100px;">
+    <mat-toolbar color="secondary">
+        <mat-toolbar-row>
+            <button mat-icon-button>
+                <mat-icon (click)="sidenav.toggle();">menu</mat-icon>
+            </button>
+            <h1 class="ms-auto" *ngFor="let persona of this.persona">{{persona.nombre}} {{persona.a_paterno}}</h1>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-sidenav-container>
+      <mat-sidenav #sidenav>
+        <mat-nav-list>
+            <a mat-list-item [routerLink]="'/menu-principal'">Inicio</a>
+            <a mat-list-item [routerLink]="'/perfil'">Mi Perfil</a>
+            <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/menu-rol'">Mantenedor de Datos</a>
+            <a mat-list-item [routerLink]="'/menu-deporte'">Deportivo</a>
+            <a mat-list-item [routerLink]="'/menu-socios'">Administrativo</a>
+            <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/mantenedor-contacto'">Mensajes</a>
+            <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null || rolSecreDir != null" [routerLink]="'/gestor-solicitudes'">Solicitudes</a>
+        </mat-nav-list>
+      </mat-sidenav>
+      <mat-sidenav-content>
+        <div class="container-fluid">
+          <!-- Breadcrumb -->
+          <nav aria-label="breadcrumb" class="main-breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a [routerLink]="'/menu-principal'">Inicio</a></li>
+                <li class="breadcrumb-item"><a [routerLink]="'/menu-deporte'">Menu-Deporte</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Administrador-Tipos-Eventos</li>
+            </ol>
+          </nav>
+          <!-- /Breadcrumb -->
+          <h1>
+              Administrador Tipos de Eventos
+          </h1>
+          <div id="table" class="table-editable">
+            <table class="table table-responsive-sm table-striped text-center">
+                <thead class="thead-dark">
+                    <tr>
+                        <th></th>
+                        <th>Nombre</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td><input type="text" class="form-control" name="nombre" [(ngModel)]="actividad.descripcion" autocomplete="off"></td>
+                        <td></td>
+                        <td><button class="btn btn-success" (click)="agregarTipoEvento()">Agregar</button></td>
+                    </tr>
+                    <tr *ngFor="let evento of tipos">
+                        <td> </td>
+                        <td> {{ evento.descripcion          }} </td>
+                        <td *ngIf="evento.estado==1">Activo</td>
+                        <td *ngIf="evento.estado==0">Inactivo</td>
+                        <td> 
+                            <i class="fas fa-edit fa-2x" id="editar" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalModificarTipoEvento" (click)="detalleTipoEventoPorId(evento.idTipo_Actividad)"></i>
+                            <i class="fas fa-toggle-on fa-2x" *ngIf="evento.estado==1" id="eliminar" (click)="desactivarTipoEvento(evento.idTipo_Actividad)"></i>
+                            <i class="fas fa-toggle-off fa-2x" *ngIf="evento.estado==0" id="eliminar2" (click)="activarTipoEvento(evento.idTipo_Actividad)"></i>
+                        </td> 
+                    </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </div>
+  <!--AGREGAR Y MOSTRAR TIPO DE EVENTO-->
+  
+<!--MODAL MODIFICAR TIPO EVENTO-->
+<div class="modal fade" id="modalModificarTipoEvento" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modificar Tipo de Evento Deportivo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <label for="">Id</label>
+                    <input type="text" class="form-control" id="id" *ngFor="let evento of det" value={{evento.idTipo_Actividad}} disabled>
+                    <label for="">Nombre</label>
+                    <input type="text" class="form-control" id="desc" *ngFor="let evento of det" value={{evento.descripcion}} autocomplete="off">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="modificarTipoEventoDeportivo()">Modificar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--MODAL MODIFICAR TIPO EVENTO-->

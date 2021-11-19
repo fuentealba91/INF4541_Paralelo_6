@@ -1,0 +1,71 @@
+<!-- <div style="margin-top: 100px;"> -->
+    <div class="contentCont">
+        <!-- <section id="wrap" class="blog-detail"> -->
+            <div class="content">
+                <div class="row overflow-visible" style="margin-top: 50px;">
+                <div class="col-sm-12">
+                    <div class="news-detail">
+                        <h1 style="margin-left: 40%;">Multimedia Club Deportivo STMSC</h1>
+                        
+                    <div class="entry-content">
+                        <br />
+                        <br />
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4 col-sm-6" *ngFor="let foto of fotos">
+                                        <div class="card" style="width: 20rem; margin-left: auto; margin-right: auto;">
+                                            <img src="http://localhost:80/PHP_BDD/Archivos/FotosGaleria/{{foto.foto}}" width="450px" height="300px" class="card-img-top" style="width: 100%; height: 15vw; object-fit: polyfill; cursor: pointer" id="editar" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalDetalleGaleria"  (click)="listarFotoGaleriaId(foto.idGaleria)">
+                                        </div>
+                                    <div class="card-header" style="width: 20rem; margin-left: auto; margin-right: auto;">
+                                        <div class="card-title">
+                                            <p>{{foto.galeria | titlecase}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        <!-- </section> -->
+    </div>
+
+    <!--MODAL MODIFICAR DEPORTE-->
+<div class="modal fade" id="modalDetalleGaleria" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" *ngFor="let galeria of det">{{galeria.titulo}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-4" *ngFor="let galeria of det">
+                        <br>
+                            <div class="card" style="width: 18rem; margin-left: auto; margin-right: auto;">
+                                <img src="http://localhost:80/PHP_BDD/Archivos/FotosGaleria/{{galeria.foto}}" width="450px" height="300px" class="card-img-top" style="width: 100%; height: 15vw; object-fit: polyfill;">
+                            </div>
+                        <br>
+                    </div>
+                </div>
+                <!-- <table style="border-collapse: collapse; width: 100%; height: 360px;">
+                    <tbody>
+                        <tr style="height: 12px;">
+                        <td style="width: fit-content; height: fit-content;" *ngFor="let galeria of det">
+                            <img src="http://localhost:80/PHP_BDD/Archivos/FotosGaleria/{{galeria.foto}}" width="450px" height="300px">
+                        </td>
+                        </tr>
+                    </tbody>
+                </table> -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--MODAL MODIFICAR DEPORTE-->
+    
+<!-- </div> -->

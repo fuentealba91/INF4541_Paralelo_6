@@ -1,0 +1,150 @@
+<div style="margin-top: 100px;">
+    <mat-toolbar color="secondary">
+        <mat-toolbar-row>
+            <button mat-icon-button>
+                <mat-icon (click)="sidenav.toggle();">menu</mat-icon>
+            </button>
+            <h1 class="ms-auto" *ngFor="let persona of this.persona">{{persona.nombre}} {{persona.a_paterno}}</h1>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-sidenav-container>
+        <mat-sidenav #sidenav>
+            <mat-nav-list>
+                <a mat-list-item [routerLink]="'/menu-principal'">Inicio</a>
+                <a mat-list-item [routerLink]="'/perfil'">Mi Perfil</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/menu-rol'">Mantenedor de Datos</a>
+                <a mat-list-item [routerLink]="'/menu-deporte'">Deportivo</a>
+                <a mat-list-item [routerLink]="'/menu-socios'">Administrativo</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/mantenedor-contacto'">Mensajes</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null || rolSecreDir != null" [routerLink]="'/gestor-solicitudes'">Solicitudes</a>
+            </mat-nav-list>
+        </mat-sidenav>
+        <mat-sidenav-content>
+            <div class="container-fluid">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="main-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a [routerLink]="'/menu-principal'">Inicio</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">gestor Solicitudes</li>
+                    </ol>
+                </nav>
+                <!-- /Breadcrumb -->
+                <section class="features-boxed">
+                    <div class="container">
+                        <div class="row justify-content-center features" style="margin-top:-300px">
+                            <div *ngIf="rolAdmin != null || rolSecreDir != null" class="col-sm-6 col-md-5 col-lg-4 item" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalSociosPendientes">
+                                <div class="box"><i class="fas fa-users icon"></i>
+                                    <h3 class="name" *ngIf="socios.length > 0">Socios Pendientes ({{socios.length}} Nuevos)</h3>
+                                    <h3 class="name" *ngIf="socios.length == 0">Socios Pendientes (0 Nuevos)</h3>
+                                </div>
+                            </div>
+                            <div *ngIf="rolAdmin != null || rolSecretario != null" class="col-sm-6 col-md-5 col-lg-4 item" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalDeportistasPendientes">
+                                <div class="box"><i class="fas fa-futbol icon"></i>
+                                    <h3 class="name" *ngIf="deportistas.length > 0">Deportistas Pendientes ({{deportistas.length}} Nuevos)</h3>
+                                    <h3 class="name" *ngIf="deportistas.length == 0">Deportistas Pendientes (0 Nuevos)</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>
+
+<!--MODAL DEPORTISTAS PENDIENTES-->
+<div class="modal fade" id="modalDeportistasPendientes" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Deportistas Pendientes</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="table" class="table-editable">
+                    <table class="table table-responsive-sm table-striped text-center">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Teléfono</th>
+                                <th>Correo</th>
+                                <th>Deporte</th>
+                                <th>Categoria</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let pendientes of deportistas">
+                                <td>    {{ pendientes.nombrePersona   }} {{pendientes.paterno}}    </td>
+                                <td>    {{ pendientes.telefono  }}    </td>
+                                <td>    {{ pendientes.correo    }}    </td>
+                                <td>    {{ pendientes.deporte   }}    </td>
+                                <td>    {{ pendientes.categoria }}    </td>
+                                <td>
+                                    <i class="far fa-check-circle fa-2x" style="cursor: pointer;" id="aceptar" (click)="aceptarDeportista(pendientes)"></i>
+                                    <i class="far fa-times-circle fa-2x" style="cursor: pointer;" id="rechazar" (click)="rechazarDeportista(pendientes)"></i>
+                                </td> 
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--MODAL DEPORTISTAS PENDIENTES-->
+
+<!--MODAL SOCIOS PENDIENTES-->
+<div class="modal fade" id="modalSociosPendientes" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Socios Pendientes</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    Total de Socios Inscritos: {{total}}
+                    <br/>
+                    Porcentaje de Socios Internos: {{cantInternos}}%
+                    <br/>
+                    Porcentaje de Socios Externos: {{cantExternos}}%
+                </div>
+                <div id="table" class="table-editable">
+                    <table class="table table-responsive-sm table-striped text-center">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Teléfono</th>
+                                <th>Correo</th>
+                                <th>Tipo</th>
+                                <th>Profesión</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let pendientes of socios">
+                                <td>    {{ pendientes.nombre   }} {{pendientes.a_paterno}}    </td>
+                                <td>    {{ pendientes.telefono  }}      </td>
+                                <td>    {{ pendientes.correo    }}      </td>
+                                <td>    {{ pendientes.descripcion   }}  </td>
+                                <td>    {{ pendientes.profesion }}      </td>
+                                <td>
+                                    <i class="far fa-check-circle fa-2x" style="cursor: pointer;" id="aceptar" (click)="aceptarSocio(pendientes)"></i>
+                                    <i class="far fa-times-circle fa-2x" style="cursor: pointer;" id="rechazar" (click)="rechazarSocio(pendientes)"></i>
+                                </td> 
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--MODAL SOCIOS PENDIENTES-->

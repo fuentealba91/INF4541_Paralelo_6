@@ -1,0 +1,213 @@
+<div style="margin-top: 100px;">
+    <mat-toolbar color="secondary">
+        <mat-toolbar-row>
+            <button mat-icon-button>
+                <mat-icon (click)="sidenav.toggle();">menu</mat-icon>
+            </button>
+            <h1 class="ms-auto" *ngFor="let persona of this.perfil">{{persona.nombre}} {{persona.a_paterno}}</h1>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-sidenav-container>
+        <mat-sidenav #sidenav>
+            <mat-nav-list>
+                <a mat-list-item [routerLink]="'/menu-principal'">Inicio</a>
+                <a mat-list-item [routerLink]="'/perfil'">Mi Perfil</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/menu-rol'">Mantenedor de Datos</a>
+                <a mat-list-item [routerLink]="'/menu-deporte'">Deportivo</a>
+                <a mat-list-item [routerLink]="'/menu-socios'">Administrativo</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/mantenedor-contacto'">Mensajes</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null || rolSecreDir != null" [routerLink]="'/gestor-solicitudes'">Solicitudes</a>
+            </mat-nav-list>
+        </mat-sidenav>
+            <mat-sidenav-content>
+            <div class="container-fluid">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="main-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a [routerLink]="'/menu-principal'">Inicio</a></li>
+                        <li class="breadcrumb-item"><a [routerLink]="'/menu-rol'">Mantenedor-Datos</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Administrador-Personas</li>
+                    </ol>
+                </nav>
+                <!-- /Breadcrumb -->
+                <h1>
+                    Administrador de Noticias
+                </h1>
+                <div id="table" class="table-editable">
+                    <table class="table table-responsive-sm table-striped text-center">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Título</th>
+                                <th>Descripción</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><button class="btn btn-success" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalAgregarNoticia">Agregar</button></td>
+                            </tr>
+                            <tr *ngFor="let noticia of noticias">
+                                <td>{{noticia.idNoticia   }}</td>
+                                <td>{{noticia.titulo          }}</td>
+                                <td>{{noticia.descripcion   }}</td>
+                                <td *ngIf="noticia.estado==1">Activo</td>
+                                <td *ngIf="noticia.estado==0">Inactivo</td>
+                                <td> 
+                                    <i class="fas fa-edit fa-2x" id="editar" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalEditarNoticia" (click)="detalleNoticia(noticia.idNoticia)"></i>
+                                    <i class="fas fa-toggle-on fa-2x" *ngIf="noticia.estado==1" id="eliminar" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalEliminarNoticia" (click)="detalleNoticiaId(noticia.idNoticia)"></i>
+                                    <i class="fas fa-toggle-off fa-2x" *ngIf="noticia.estado==0" id="eliminar2" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalEliminarNoticia2" (click)="detalleNoticiaId(noticia.idNoticia)"></i>
+                                    <i class="fas fa-trash fa-2x" id="eliminar" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalEliminarNoticiaPerma" (click)="detalleNoticiaId(noticia.idNoticia)"></i>
+                                </td> 
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>
+
+<!--EDITAR NOTICIA-->
+<div class="modal fade" id="modalEditarNoticia" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Noticia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="loginForm" class="row g-3" (submit)="editarNoticia()">
+                    <div class="col-md-12">
+                        <label for="titulo" class="form-label">Título</label>
+                        <input type="tel" class="form-control form-control-sm" formControlName="titulo" id="titulo">
+                        <div *ngIf="(submitted && loginForm.get('titulo')?.errors) || (loginForm.get('titulo')?.touched && loginForm.get('titulo')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('titulo')?.hasError('required')">El título es requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="imagen" class="form-label">Imagen Noticia</label>
+                        <input type="file" class="form-control form-control-sm" accept=".jpeg, .jpg .png" formControlName="imagen" id="imagen" (change)="seleccionarArchivo($event)">
+                    </div>
+                    <div class="col-md-12">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <textarea type="text" class="form-control form-control-sm" formControlName="descripcion" id="descripcion"></textarea>
+                        <div *ngIf="(submitted && loginForm.get('descripcion')?.errors) || (loginForm.get('descripcion')?.touched && loginForm.get('descripcion')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('descripcion')?.hasError('required')">La descripción es requerida</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12" id="boton">
+                        <button class="btn btn-success" type="submit">Editar</button>
+                    </div>
+                    <div class="col-md-12"></div>
+                </form>
+                </div>
+        </div>
+    </div>
+</div>
+
+<!--MODAL DESACTIVAR NOTICIA-->
+<div class="modal fade" id="modalEliminarNoticia" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Desactivar Noticia</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5 *ngFor="let noticia of deta">¿Está seguro de desactivar a {{noticia.titulo}}?</h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="btnEliminar" *ngFor="let noticia of deta" (click)="eliminarNoticia(noticia.idNoticia)">Desactivar</button>
+          <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+        
+      </div>
+    </div>
+</div>
+<!--MODAL DESACTIVAR NOTICIA-->
+
+<!--MODAL ACTIVAR NOTICIA-->
+<div class="modal fade" id="modalEliminarNoticia2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Reincorporar Noticia</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5 *ngFor="let noticia of deta">¿Está seguro de reincorporar a {{noticia.titulo}}?</h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="btnEliminar" *ngFor="let noticia of deta" (click)="eliminarNoticia2(noticia.idNoticia)">Reincorporar</button>
+          <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+</div>
+<!--MODAL ACTIVAR NOTICIA-->
+
+<!--MODAL ELIMINAR NOTICIA-->
+<div class="modal fade" id="modalEliminarNoticiaPerma" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Eliminar Noticia</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5 *ngFor="let noticia of deta">¿Está seguro de eliminar permanentemente a {{noticia.titulo}}?</h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="btnEliminar" *ngFor="let noticia of deta" (click)="eliminarNoticiaPerma(noticia.idNoticia)">Eliminar</button>
+          <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+        
+      </div>
+    </div>
+</div>
+<!--MODAL ELIMINAR NOTICIA-->
+
+<!--AGREGAR NOTICIA-->
+<div class="modal fade" id="modalAgregarNoticia" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Noticia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="loginForm" class="row g-3 needs-validation" (submit)= "agregarNoticia()">
+                    <div class="col-md-12">
+                        <label for="nombre" class="form-label">Titulo</label>
+                        <input type="text" class="form-control form-control-sm" id="titulo" formControlName="titulo" required>
+                        <div *ngIf="(submitted && loginForm.get('titulo')?.errors) || (loginForm.get('titulo')?.touched && loginForm.get('titulo')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('titulo')?.hasError('required')">Título es requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="imagen" class="form-label">Imagen Noticia</label>
+                        <input type="file" class="form-control form-control-sm" accept=".jpeg, .jpg .png" formControlName="imagen" id="imagen" (change)="seleccionarArchivo($event)">
+                    </div>
+                    <div class="col-md-12">
+                        <label for="nombre" class="form-label">Descripción</label>
+                        <textarea type="text" class="form-control form-control-sm" id="descripcion" formControlName="descripcion" required></textarea>
+                        <div *ngIf="(submitted && loginForm.get('descripcion')?.errors) || (loginForm.get('descripcion')?.touched && loginForm.get('descripcion')?.errors)">
+                            <span class="error" *ngIf="loginForm.get('descripcion')?.hasError('required')">Descripción es requerida</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Agregar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

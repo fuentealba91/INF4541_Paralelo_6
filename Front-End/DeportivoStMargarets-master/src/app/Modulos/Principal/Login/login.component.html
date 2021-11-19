@@ -1,0 +1,51 @@
+<div class="container-fluid">
+    <br>
+    <!-- <div class="icon d-flex align-items-center justify-content-center">
+        <i class="fas fa-user-circle fa-6x"></i>
+    </div> -->
+    <h3>Inicio de Sesión</h3>
+    <br>
+    <form [formGroup]="loginForm" class="row g-3" (submit)="Ingresar()">
+        <div class="col-md-12">
+            <label for="correo" class="form-label">Correo</label>
+            <input type="email" class="form-control" formControlName="email" id="correo" name="correo" placeholder="Correo">
+            <div *ngIf="(submitted && loginForm.get('email')?.errors) || (loginForm.get('email')?.touched && loginForm.get('email')?.errors)">
+                <span class="error" *ngIf="loginForm.get('email')?.hasError('required')">Correo es requerido</span>
+                <span class="error" *ngIf="loginForm.get('email')?.hasError('pattern')">Formato de email no válido</span>
+            </div>
+            
+            <!-- <span class="error" *ngIf="loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched">Correo es requerido</span> -->
+        </div>
+        <div class="col-md-12">
+            <label for="clave" class="form-label">Contraseña</label>
+            <input type="password" class="form-control" formControlName="password" id="clave" name="clave" placeholder="Contraseña">
+            <div *ngIf="(submitted && loginForm.get('password')?.errors) || (loginForm.get('password')?.touched && loginForm.get('password')?.errors)">
+                <span class="error" *ngIf="loginForm.get('password')?.hasError('required')">Contraseña es requerida</span>
+                <span class="error" *ngIf="loginForm.get('password')?.hasError('pattern')">Contraseña debe contener 1 mayúscula, 1 minúscula, 1 número, 1 cáracter especial y al menos 6 caracteres</span>
+            </div>
+            
+            <!-- <span class="error" *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched">Contraseña es requerida</span>
+            <span class="error" *ngIf="loginForm.get('password')?.hasError('pattern') && loginForm.get('password')?.touched">Contraseña debe contener 1 mayúscula, 1 minúscula, 1 número y al menos 8 caracteres</span> -->
+        </div>
+        <div class="col-md-12">
+            <!-- <re-captcha id="recpatcha" formControlName="recaptcha" [siteKey]="sitekey"></re-captcha>
+            <div *ngIf="(submitted && loginForm.get('recaptcha')?.errors) || (loginForm.get('recaptcha')?.touched && loginForm.get('recaptcha')?.errors)">
+                <span class="error" *ngIf="loginForm.get('recaptcha')?.hasError('required')">Captcha es requerido</span>
+            </div> -->
+            <re-captcha (resolved)="resolved($event)" [siteKey]="sitekey"></re-captcha>
+            <div *ngIf="(submitted && this.flag == false)">
+                <span class="error">Captcha es requerido</span>
+            </div>
+        </div>
+        <div class="col-md-12" id="boton">
+            <button class="btn btn-success" type="submit">Enviar</button>
+        </div>
+        <div class="col-md-6" id="registro">
+            <a [routerLink]="'/registro'">Registrarse</a>
+        </div>
+        <div class="col-md-6" id="recuperar">
+            <a [routerLink]="'/recuperar-contraseña'">Recuperar Contraseña</a>
+        </div>
+    </form>
+    <br>
+</div>

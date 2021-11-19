@@ -1,0 +1,245 @@
+<div style="margin-top: 100px;">
+    <mat-toolbar color="secondary">
+        <mat-toolbar-row>
+            <button mat-icon-button>
+                <mat-icon (click)="sidenav.toggle();">menu</mat-icon>
+            </button>
+            <h1 class="ms-auto" *ngFor="let persona of this.persona">{{persona.nombre}} {{persona.a_paterno}}</h1>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-sidenav-container>
+        <mat-sidenav #sidenav>
+            <mat-nav-list>
+                <a mat-list-item [routerLink]="'/menu-principal'">Inicio</a>
+                <a mat-list-item [routerLink]="'/perfil'">Mi Perfil</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/menu-rol'">Mantenedor de Datos</a>
+                <a mat-list-item [routerLink]="'/menu-deporte'">Deportivo</a>
+                <a mat-list-item *ngIf="menor == null" [routerLink]="'/menu-socios'">Administrativo</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null" [routerLink]="'/mantenedor-contacto'">Mensajes</a>
+                <a mat-list-item *ngIf="rolAdmin != null || rolSecretario != null || rolSecreDir != null" [routerLink]="'/gestor-solicitudes'">Solicitudes</a>
+            </mat-nav-list>
+        </mat-sidenav>
+        <mat-sidenav-content>
+        <div class="contenedor">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="main-breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="'/menu-principal'">Inicio</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Menu-Deporte</li>
+                </ol>
+            </nav>
+            <!-- /Breadcrumb -->
+            <section class="features-boxed" style="margin-top: 50px;">
+                <div class="container">
+                    <div class="row justify-content-center features">
+                        <div *ngIf="rolAdmin != null || rolSecretario != null" class="col-sm-6 col-md-5 col-lg-4 item">
+                            <div class="box"><i class="fas fa-futbol icon"></i>
+                                <h3 class="name">Deportes</h3>
+                                <!-- <p class="description">Asignar y Eliminar Deporte</p> -->
+                                <a class="learn-more" [routerLink]="'/deporte'">Entrar »</a>
+                            </div>
+                        </div>
+                        <div *ngIf="rolAdmin != null || rolSecretario != null" class="col-sm-6 col-md-5 col-lg-4 item">
+                            <div class="box"><i class="fas fa-cogs icon"></i>
+                                <h3 class="name">Categoría Deporte</h3>
+                                <!-- <p class="description">Agregar, Modificar, Eliminar Categorías</p> -->
+                                <a class="learn-more" [routerLink]="'/categoria'">Entrar »</a>
+                            </div>
+                        </div>
+                        <div *ngIf="rolAdmin != null || rolSecretario != null" class="col-sm-6 col-md-5 col-lg-4 item">
+                            <div class="box"><i class="fas fa-users icon"></i>
+                                <h3 class="name">Deportistas</h3>
+                                <!-- <p class="description">Activar, Desactivar Deportistas</p> -->
+                                <a class="learn-more" [routerLink]="'/gestor-deportistas'">Entrar »</a>
+                            </div>
+                        </div>
+                        <div *ngIf="rolAdmin != null || rolSecretario != null" class="col-sm-6 col-md-5 col-lg-4 item">
+                            <div class="box"><i class="fas fa-cogs icon"></i>
+                                <h3 class="name">Tipos de Eventos Deportivos</h3>
+                                <!-- <p class="description">Agregar, Modificar, Eliminar Tipos de Eventos Deportivos</p> -->
+                                <a class="learn-more" [routerLink]="'/tipo-evento'">Entrar »</a>
+                            </div>
+                        </div>
+                        <div *ngIf="rolAdmin != null || rolSecretario != null" class="col-sm-6 col-md-5 col-lg-4 item">
+                            <div class="box"><i class="fas fa-trophy icon"></i>
+                                <h3 class="name">Eventos Deportivos</h3>
+                                <!-- <p class="description">Agendar, Modificar, Eliminar Eventos</p> -->
+                                <a class="learn-more" [routerLink]="'/evento-deportivo'">Entrar »</a>
+                            </div>
+                        </div>
+                        <div *ngIf="menor == null" class="col-sm-6 col-md-5 col-lg-4 item">
+                            <div class="box" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalYoRepresentado">
+                                <i class="fas fa-plus-circle icon"></i>
+                                <h3 class="name">Registrarme en Deporte</h3>
+                                <a class="learn-more">Entrar »</a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-5 col-lg-4 item">
+                            <div class="box">
+                                <h3 class="name">Mis Deportes</h3>
+                                <a *ngFor="let deporte of deportes" [routerLink]="'/mi-deporte'" (click)="guardarId(deporte.idCategoria)">{{deporte.nombre}}<br/></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>
+
+<!--REGISTRARME YO O UN REPRESENTADO-->
+<div class="modal fade" id="modalYoRepresentado" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Registro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Se desea registrar usted o un representado?
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalRegistroDeportista" (click)="this.pupilo = 0; asignarEdad(this.edad)">Yo</button>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalRepresentados">Representado</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--REGISTRARME YO O UN REPRESENTADO-->
+
+<!--LISTA REPRESENTADOS-->
+<div class="modal fade" id="modalRepresentados" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Registro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="table" class="table-editable">
+                    <table class="table table-responsive-sm table-striped text-center">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let representado of listaRepresentado">
+                                <td> {{ representado.nombre          }} </td>
+                                <td>
+                                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalRegistroDeportista" (click)="this.pupilo = representado.id_Persona; asignarEdad(representado.f_nacimiento)">Inscribir</button>
+                                </td> 
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalYoRepresentado">Volver</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--LISTA REPRESENTADOS-->
+
+<!--LISTADO DEPORTES ACTIVOS-->
+<div class="modal fade" id="modalRegistroDeportista" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Registro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="table" class="table-editable">
+                    <table class="table table-responsive-sm table-striped text-center">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let deporte of deportesActivos">
+                                <td> {{ deporte.nombre          }} </td>
+                                <td>
+                                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalCategoriasDeportes" (click)="listarCategoriaPorDeporte(deporte.idDeporte)">Detalles</button>
+                                </td> 
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalYoRepresentado">Volver</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--LISTADO DEPORTES ACTIVOS-->
+
+<!--CATEGORIAS ACTIVAS Y CALIFICADAS-->
+<div class="modal fade" id="modalCategoriasDeportes" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Registro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="table" class="table-editable">
+                    <table class="table table-responsive-sm table-striped text-center">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Categoría</th>
+                                <th>Horarios</th>
+                                <th>Valores</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let categoria of categoriasActivas">
+                                <td> {{ categoria.nombre          }} </td>
+                                <td>
+                                    <textarea class="form-control form-control-sm" disabled>{{ categoria.entrenamientos }}</textarea>
+                                </td>
+                                <td>
+                                    <textarea class="form-control form-control-sm" disabled>{{ categoria.valores }}</textarea>
+                                </td>
+                                <td>
+                                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalConfirmacion" (click)="detalleCategoriaId(categoria.idCategoria)">Inscribirme</button>
+                                </td> 
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalRegistroDeportista">Volver</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--CATEGORIAS ACTIVAS Y CALIFICADAS-->
+
+<!--MENSAJE Y CONFIRMACIÓN-->
+<div class="modal fade" id="modalConfirmacion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Registro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Su solicitud será enviada, recuerde pagar el monto asociado a la cuenta XXXXXXXXXXX para ser aceptado
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalCategoriasDeportes">Volver</button>
+                <button class="btn btn-success" (click)="asignarRolyDeporte()">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--MENSAJE Y CONFIRMACIÓN-->
